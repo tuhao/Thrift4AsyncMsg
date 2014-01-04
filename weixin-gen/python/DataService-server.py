@@ -67,8 +67,8 @@ class SyncDB(DataService.Iface):
 					repo.execute(sql)
 					news_id = repo.last_record()
 					for article in news.articles:
-						sql = 'insert into signature_article (news_id,title,description,pic,url)' % (news_id,
-							article.title,article.description,article.pic,article.url)
+						sql = 'insert into signature_article (news_id,title,description,pic,url) values (%d,"%s","%s","%s","%s")' % (news_id,
+							article.title,article.description,article.imageurl,article.url)
 						repo.execute(sql)
 		except Exception, e:
 			print e
