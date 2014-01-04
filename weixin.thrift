@@ -18,4 +18,5 @@ struct Message {
 service DataService {
 	bool pushMsg(1: list<Message> data),
 	bool pushNews(1: list<News> data),
+	bool pushString(1: string data),
 }
