@@ -58,9 +58,9 @@ if sys.argv[argi] == '-h':
 #  http = True
 #  argi += 2
 #
-#if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
-#  framed = True
-#  argi += 1
+if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
+  framed = True
+  argi += 1
 
 cmd = sys.argv[argi]
 args = sys.argv[argi+1:]

@@ -6,6 +6,7 @@ from thrift.protocol import TBinaryProtocol
 import DataService
 import ConfigParser
 import MySQLdb
+import sys
 
 CFG_FILE = 'mysql.cfg'
 CFG_SESSION = 'connect'
@@ -66,7 +67,7 @@ class SyncDB(DataService.Iface):
 					repo.execute(sql)
 					news_id = repo.last_record()
 					for article in news.articles:
-						sql = 'insert into signature_article(news_id,title,description,pic,url)' % (news_id,
+						sql = 'insert into signature_article (news_id,title,description,pic,url)' % (news_id,
 							article.title,article.description,article.pic,article.url)
 						repo.execute(sql)
 		except Exception, e:
@@ -80,16 +81,22 @@ class SyncDB(DataService.Iface):
 		print data
 		return True
 
-def run():
-	server_address = '192.168.1.101'
-	port = 9090
-	transport = TSocket.TServerSocket(server_address,port)
-	#transport = TTransport.TFramedTransport(transport)
-	transportFactory = TTransport.TBufferedTransportFactory()
-	protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
-	handler = SyncDB()
-	processor = DataService.Processor(handler)
-	server = TServer.TThreadPoolServer(processor,transport,transportFactory,protocolFactory)
-	print "Starting thrift server in python..."
-	server.serve()
-run()
+argi = 1
+server_address = '192.168.1.101'
+port = 9090
+
+if len(sys.argv) > 1:
+	if sys.argv[argi == '-h']:
+		parts = sys.argv[argi+1].split(':')
+  		server_address = parts[0]
+  		if len(parts) > 1:
+    			port = int(parts[1])
+
+transport = TSocket.TServerSocket(server_address,port)
+transportFactory = TTransport.TFramedTransportFactory()
+protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
+handler = SyncDB()
+processor = DataService.Processor(handler)
+server = TServer.TThreadPoolServer(processor,transport,transportFactory,protocolFactory)
+print "Starting thrift server in python..."
+server.serve()
