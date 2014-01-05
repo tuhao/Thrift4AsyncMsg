@@ -90,11 +90,12 @@ if len(sys.argv) > 1:
 	if sys.argv[argi] == '-h':
 		parts = sys.argv[argi+1].split(':')
   		server_address = parts[0]
-  		argi = argi + 1
+  		argi = argi + 2
   		if len(parts) > 1:
     			port = int(parts[1])
-    			argi = argi + 1
 
+        print argi
+        print sys.argv[argi+1]
     	if sys.argv[argi] == '-cfg':
     		CFG_FILE = sys.argv[argi+1]
 
