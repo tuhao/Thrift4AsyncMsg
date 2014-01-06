@@ -41,11 +41,6 @@ class WeixinDB:
 		self.conn.commit()
 		self.conn.close()
 
-config = ConfigParser.ConfigParser()
-s = lambda name:config.get(CFG_SESSION,name)
-with open(CFG_FILE,'r') as cfg:
-	config.readfp(cfg)
-repo =  WeixinDB(s('host'),s('user'),s('passwd'),s('db_name'))
 
 class SyncDB(DataService.Iface):
 
@@ -92,11 +87,22 @@ server_address = '192.168.1.101'
 port = 9090
 
 if len(sys.argv) > 1:
-	if sys.argv[argi == '-h']:
+	if sys.argv[argi] == '-h':
 		parts = sys.argv[argi+1].split(':')
   		server_address = parts[0]
+  		argi = argi + 1
   		if len(parts) > 1:
     			port = int(parts[1])
+    			argi = argi + 1
+
+    	if sys.argv[argi] == '-cfg':
+    		CFG_FILE = sys.argv[argi+1]
+
+config = ConfigParser.ConfigParser()
+s = lambda name:config.get(CFG_SESSION,name)
+with open(CFG_FILE,'r') as cfg:
+	config.readfp(cfg)
+repo =  WeixinDB(s('host'),s('user'),s('passwd'),s('db_name'))
 
 transport = TSocket.TServerSocket(server_address,port)
 transportFactory = TTransport.TFramedTransportFactory()
