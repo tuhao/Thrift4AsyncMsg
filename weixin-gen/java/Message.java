@@ -35,6 +35,8 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
 
   private static final org.apache.thrift.protocol.TField TITLE_FIELD_DESC = new org.apache.thrift.protocol.TField("title", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField CONTENT_FIELD_DESC = new org.apache.thrift.protocol.TField("content", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField REASON_FIELD_DESC = new org.apache.thrift.protocol.TField("reason", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField CREATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("create_time", org.apache.thrift.protocol.TType.STRING, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -44,11 +46,15 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
 
   public String title; // required
   public String content; // required
+  public String reason; // required
+  public String create_time; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     TITLE((short)1, "title"),
-    CONTENT((short)2, "content");
+    CONTENT((short)2, "content"),
+    REASON((short)3, "reason"),
+    CREATE_TIME((short)4, "create_time");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -67,6 +73,10 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
           return TITLE;
         case 2: // CONTENT
           return CONTENT;
+        case 3: // REASON
+          return REASON;
+        case 4: // CREATE_TIME
+          return CREATE_TIME;
         default:
           return null;
       }
@@ -114,6 +124,10 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.CONTENT, new org.apache.thrift.meta_data.FieldMetaData("content", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.REASON, new org.apache.thrift.meta_data.FieldMetaData("reason", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("create_time", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Message.class, metaDataMap);
   }
@@ -123,11 +137,15 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
 
   public Message(
     String title,
-    String content)
+    String content,
+    String reason,
+    String create_time)
   {
     this();
     this.title = title;
     this.content = content;
+    this.reason = reason;
+    this.create_time = create_time;
   }
 
   /**
@@ -140,6 +158,12 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
     if (other.isSetContent()) {
       this.content = other.content;
     }
+    if (other.isSetReason()) {
+      this.reason = other.reason;
+    }
+    if (other.isSetCreate_time()) {
+      this.create_time = other.create_time;
+    }
   }
 
   public Message deepCopy() {
@@ -150,6 +174,8 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
   public void clear() {
     this.title = null;
     this.content = null;
+    this.reason = null;
+    this.create_time = null;
   }
 
   public String getTitle() {
@@ -200,6 +226,54 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
     }
   }
 
+  public String getReason() {
+    return this.reason;
+  }
+
+  public Message setReason(String reason) {
+    this.reason = reason;
+    return this;
+  }
+
+  public void unsetReason() {
+    this.reason = null;
+  }
+
+  /** Returns true if field reason is set (has been assigned a value) and false otherwise */
+  public boolean isSetReason() {
+    return this.reason != null;
+  }
+
+  public void setReasonIsSet(boolean value) {
+    if (!value) {
+      this.reason = null;
+    }
+  }
+
+  public String getCreate_time() {
+    return this.create_time;
+  }
+
+  public Message setCreate_time(String create_time) {
+    this.create_time = create_time;
+    return this;
+  }
+
+  public void unsetCreate_time() {
+    this.create_time = null;
+  }
+
+  /** Returns true if field create_time is set (has been assigned a value) and false otherwise */
+  public boolean isSetCreate_time() {
+    return this.create_time != null;
+  }
+
+  public void setCreate_timeIsSet(boolean value) {
+    if (!value) {
+      this.create_time = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case TITLE:
@@ -218,6 +292,22 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       }
       break;
 
+    case REASON:
+      if (value == null) {
+        unsetReason();
+      } else {
+        setReason((String)value);
+      }
+      break;
+
+    case CREATE_TIME:
+      if (value == null) {
+        unsetCreate_time();
+      } else {
+        setCreate_time((String)value);
+      }
+      break;
+
     }
   }
 
@@ -228,6 +318,12 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
 
     case CONTENT:
       return getContent();
+
+    case REASON:
+      return getReason();
+
+    case CREATE_TIME:
+      return getCreate_time();
 
     }
     throw new IllegalStateException();
@@ -244,6 +340,10 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       return isSetTitle();
     case CONTENT:
       return isSetContent();
+    case REASON:
+      return isSetReason();
+    case CREATE_TIME:
+      return isSetCreate_time();
     }
     throw new IllegalStateException();
   }
@@ -276,6 +376,24 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       if (!(this_present_content && that_present_content))
         return false;
       if (!this.content.equals(that.content))
+        return false;
+    }
+
+    boolean this_present_reason = true && this.isSetReason();
+    boolean that_present_reason = true && that.isSetReason();
+    if (this_present_reason || that_present_reason) {
+      if (!(this_present_reason && that_present_reason))
+        return false;
+      if (!this.reason.equals(that.reason))
+        return false;
+    }
+
+    boolean this_present_create_time = true && this.isSetCreate_time();
+    boolean that_present_create_time = true && that.isSetCreate_time();
+    if (this_present_create_time || that_present_create_time) {
+      if (!(this_present_create_time && that_present_create_time))
+        return false;
+      if (!this.create_time.equals(that.create_time))
         return false;
     }
 
@@ -315,6 +433,26 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetReason()).compareTo(other.isSetReason());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReason()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.reason, other.reason);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetCreate_time()).compareTo(other.isSetCreate_time());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetCreate_time()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.create_time, other.create_time);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -348,6 +486,22 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       sb.append("null");
     } else {
       sb.append(this.content);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("reason:");
+    if (this.reason == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.reason);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("create_time:");
+    if (this.create_time == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.create_time);
     }
     first = false;
     sb.append(")");
@@ -409,6 +563,22 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 3: // REASON
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.reason = iprot.readString();
+              struct.setReasonIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 4: // CREATE_TIME
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.create_time = iprot.readString();
+              struct.setCreate_timeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -432,6 +602,16 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       if (struct.content != null) {
         oprot.writeFieldBegin(CONTENT_FIELD_DESC);
         oprot.writeString(struct.content);
+        oprot.writeFieldEnd();
+      }
+      if (struct.reason != null) {
+        oprot.writeFieldBegin(REASON_FIELD_DESC);
+        oprot.writeString(struct.reason);
+        oprot.writeFieldEnd();
+      }
+      if (struct.create_time != null) {
+        oprot.writeFieldBegin(CREATE_TIME_FIELD_DESC);
+        oprot.writeString(struct.create_time);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -458,19 +638,31 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       if (struct.isSetContent()) {
         optionals.set(1);
       }
-      oprot.writeBitSet(optionals, 2);
+      if (struct.isSetReason()) {
+        optionals.set(2);
+      }
+      if (struct.isSetCreate_time()) {
+        optionals.set(3);
+      }
+      oprot.writeBitSet(optionals, 4);
       if (struct.isSetTitle()) {
         oprot.writeString(struct.title);
       }
       if (struct.isSetContent()) {
         oprot.writeString(struct.content);
       }
+      if (struct.isSetReason()) {
+        oprot.writeString(struct.reason);
+      }
+      if (struct.isSetCreate_time()) {
+        oprot.writeString(struct.create_time);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, Message struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(2);
+      BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
         struct.title = iprot.readString();
         struct.setTitleIsSet(true);
@@ -478,6 +670,14 @@ public class Message implements org.apache.thrift.TBase<Message, Message._Fields
       if (incoming.get(1)) {
         struct.content = iprot.readString();
         struct.setContentIsSet(true);
+      }
+      if (incoming.get(2)) {
+        struct.reason = iprot.readString();
+        struct.setReasonIsSet(true);
+      }
+      if (incoming.get(3)) {
+        struct.create_time = iprot.readString();
+        struct.setCreate_timeIsSet(true);
       }
     }
   }

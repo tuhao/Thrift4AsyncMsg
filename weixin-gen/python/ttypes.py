@@ -199,17 +199,23 @@ class Message:
   Attributes:
    - title
    - content
+   - reason
+   - create_time
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'title', None, None, ), # 1
     (2, TType.STRING, 'content', None, None, ), # 2
+    (3, TType.STRING, 'reason', None, None, ), # 3
+    (4, TType.STRING, 'create_time', None, None, ), # 4
   )
 
-  def __init__(self, title=None, content=None,):
+  def __init__(self, title=None, content=None, reason=None, create_time=None,):
     self.title = title
     self.content = content
+    self.reason = reason
+    self.create_time = create_time
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -230,6 +236,16 @@ class Message:
           self.content = iprot.readString();
         else:
           iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRING:
+          self.reason = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.create_time = iprot.readString();
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -247,6 +263,14 @@ class Message:
     if self.content is not None:
       oprot.writeFieldBegin('content', TType.STRING, 2)
       oprot.writeString(self.content)
+      oprot.writeFieldEnd()
+    if self.reason is not None:
+      oprot.writeFieldBegin('reason', TType.STRING, 3)
+      oprot.writeString(self.reason)
+      oprot.writeFieldEnd()
+    if self.create_time is not None:
+      oprot.writeFieldBegin('create_time', TType.STRING, 4)
+      oprot.writeString(self.create_time)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

@@ -26,6 +26,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  bool pushMsg( data)'
   print '  bool pushNews( data)'
   print '  bool pushString(string data)'
+  print '   pullMsg(i32 size)'
   print ''
   sys.exit(0)
 
@@ -94,6 +95,12 @@ elif cmd == 'pushString':
     print 'pushString requires 1 args'
     sys.exit(1)
   pp.pprint(client.pushString(args[0],))
+
+elif cmd == 'pullMsg':
+  if len(args) != 1:
+    print 'pullMsg requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.pullMsg(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd

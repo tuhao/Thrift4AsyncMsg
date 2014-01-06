@@ -1,22 +1,26 @@
-#- * - coding=utf-8  - * -
+#coding=utf-8
+
 from thrift.server import TServer
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
+from ttypes import *
 import DataService
 import ConfigParser
 import MySQLdb
-import sys
 import time
 import datetime
+import sys
+reload(sys)
+sys.setdefaultencoding='utf-8'
 
 CFG_FILE = 'mysql.cfg'
 CFG_SESSION = 'connect'
 
 class WeixinDB:
 
-	def __init__(self,host,user,passwd,db_name):
-		self.conn = MySQLdb.connect(host,user,passwd,db_name)
+	def __init__(self,host,user,passwd,db_name,charset):
+		self.conn = MySQLdb.connect(host,user,passwd,db_name,charset=charset)
 		self.cursor = self.conn.cursor()
 
 	def execute(self,sql_str):
@@ -36,6 +40,9 @@ class WeixinDB:
 	def __enter__(self):
 		pass
 
+	def rollback(self):
+		self.conn.rollback()
+
 	def close(self):
 		self.cursor.close()
 		self.conn.commit()
@@ -54,6 +61,7 @@ class SyncDB(DataService.Iface):
 					repo.execute(sql)
 		except Exception, e:
 			print e
+			repo.rollback()
 			return False
 		else:
 			return True
@@ -73,6 +81,7 @@ class SyncDB(DataService.Iface):
 						repo.execute(sql)
 		except Exception, e:
 			print e
+			repo.rollback()
 			return False
 		else:
 			return True
@@ -81,6 +90,21 @@ class SyncDB(DataService.Iface):
 	def pushString(self,data):
 		print data
 		return True
+
+	def pullMsg(self,size):
+		result = list()
+		try:
+			sql = """select * from signature_message order by id desc limit """ + str(size)
+			for item in repo.execute(sql):
+				if item[4] is None:
+					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8')))
+				else:
+					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=item[4].encode('utf-8')))
+		except Exception, e:
+			print e
+			return []
+		else:
+			return result
 
 argi = 1
 server_address = '192.168.1.101'
@@ -94,8 +118,6 @@ if len(sys.argv) > 1:
   		if len(parts) > 1:
     			port = int(parts[1])
 
-        print argi
-        print sys.argv[argi+1]
     	if sys.argv[argi] == '-cfg':
     		CFG_FILE = sys.argv[argi+1]
 
@@ -103,7 +125,7 @@ config = ConfigParser.ConfigParser()
 s = lambda name:config.get(CFG_SESSION,name)
 with open(CFG_FILE,'r') as cfg:
 	config.readfp(cfg)
-repo =  WeixinDB(s('host'),s('user'),s('passwd'),s('db_name'))
+repo =  WeixinDB(s('host'),s('user'),s('passwd'),s('db_name'),s('charset'))
 
 transport = TSocket.TServerSocket(server_address,port)
 transportFactory = TTransport.TFramedTransportFactory()
