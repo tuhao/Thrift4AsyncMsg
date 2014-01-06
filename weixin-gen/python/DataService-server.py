@@ -7,6 +7,8 @@ import DataService
 import ConfigParser
 import MySQLdb
 import sys
+import time
+import datetime
 
 CFG_FILE = 'mysql.cfg'
 CFG_SESSION = 'connect'
@@ -49,9 +51,11 @@ class SyncDB(DataService.Iface):
 
 	def pushMsg(self,data):
 		try:
+			start = time.localtime(time.time())
+			create_time = datetime.datetime(*start[:6])
 			with repo:
 				for msg in data:
-					sql = 'insert into signature_message (title,content) values ("%s","%s")' % (msg.title,msg.content)
+					sql = 'insert into signature_message (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
 					repo.execute(sql)
 		except Exception, e:
 			print e
@@ -62,8 +66,10 @@ class SyncDB(DataService.Iface):
 	def pushNews(self,data):
 		try:
 			with repo:
+				start = time.localtime(time.time())
+				create_time = datetime.datetime(*start[:6])
 				for news in data:
-					sql = 'insert into signature_news (title) values("%s")' % (news.title)
+					sql = 'insert into signature_news (title,create_time) values("%s","%s")' % (news.title,create_time)
 					repo.execute(sql)
 					news_id = repo.last_record()
 					for article in news.articles:
