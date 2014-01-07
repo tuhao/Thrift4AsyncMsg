@@ -24,6 +24,9 @@ type DataService interface {
 	// Parameters:
 	//  - Data
 	PushString(data string) (r bool, err error)
+	// Parameters:
+	//  - Size
+	PullMsg(size int32) (r []*Message, err error)
 }
 
 type DataServiceClient struct {
@@ -229,6 +232,65 @@ func (p *DataServiceClient) recvPushString() (value bool, err error) {
 	return
 }
 
+// Parameters:
+//  - Size
+func (p *DataServiceClient) PullMsg(size int32) (r []*Message, err error) {
+	if err = p.sendPullMsg(size); err != nil {
+		return
+	}
+	return p.recvPullMsg()
+}
+
+func (p *DataServiceClient) sendPullMsg(size int32) (err error) {
+	oprot := p.OutputProtocol
+	if oprot == nil {
+		oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+		p.OutputProtocol = oprot
+	}
+	p.SeqId++
+	oprot.WriteMessageBegin("pullMsg", thrift.CALL, p.SeqId)
+	args13 := NewPullMsgArgs()
+	args13.Size = size
+	err = args13.Write(oprot)
+	oprot.WriteMessageEnd()
+	oprot.Flush()
+	return
+}
+
+func (p *DataServiceClient) recvPullMsg() (value []*Message, err error) {
+	iprot := p.InputProtocol
+	if iprot == nil {
+		iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+		p.InputProtocol = iprot
+	}
+	_, mTypeId, seqId, err := iprot.ReadMessageBegin()
+	if err != nil {
+		return
+	}
+	if mTypeId == thrift.EXCEPTION {
+		error15 := thrift.NewTApplicationException(thrift.UNKNOWN_APPLICATION_EXCEPTION, "Unknown Exception")
+		var error16 error
+		error16, err = error15.Read(iprot)
+		if err != nil {
+			return
+		}
+		if err = iprot.ReadMessageEnd(); err != nil {
+			return
+		}
+		err = error16
+		return
+	}
+	if p.SeqId != seqId {
+		err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "ping failed: out of sequence response")
+		return
+	}
+	result14 := NewPullMsgResult()
+	err = result14.Read(iprot)
+	iprot.ReadMessageEnd()
+	value = result14.Success
+	return
+}
+
 type DataServiceProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
 	handler      DataService
@@ -249,11 +311,12 @@ func (p *DataServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFuncti
 
 func NewDataServiceProcessor(handler DataService) *DataServiceProcessor {
 
-	self13 := &DataServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self13.processorMap["pushMsg"] = &dataServiceProcessorPushMsg{handler: handler}
-	self13.processorMap["pushNews"] = &dataServiceProcessorPushNews{handler: handler}
-	self13.processorMap["pushString"] = &dataServiceProcessorPushString{handler: handler}
-	return self13
+	self17 := &DataServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self17.processorMap["pushMsg"] = &dataServiceProcessorPushMsg{handler: handler}
+	self17.processorMap["pushNews"] = &dataServiceProcessorPushNews{handler: handler}
+	self17.processorMap["pushString"] = &dataServiceProcessorPushString{handler: handler}
+	self17.processorMap["pullMsg"] = &dataServiceProcessorPullMsg{handler: handler}
+	return self17
 }
 
 func (p *DataServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -266,12 +329,12 @@ func (p *DataServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success b
 	}
 	iprot.Skip(thrift.STRUCT)
 	iprot.ReadMessageEnd()
-	x14 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
+	x18 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
 	oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-	x14.Write(oprot)
+	x18.Write(oprot)
 	oprot.WriteMessageEnd()
 	oprot.Flush()
-	return false, x14
+	return false, x18
 
 }
 
@@ -404,6 +467,49 @@ func (p *dataServiceProcessorPushString) Process(seqId int32, iprot, oprot thrif
 	return true, err
 }
 
+type dataServiceProcessorPullMsg struct {
+	handler DataService
+}
+
+func (p *dataServiceProcessorPullMsg) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := NewPullMsgArgs()
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("pullMsg", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush()
+		return
+	}
+	iprot.ReadMessageEnd()
+	result := NewPullMsgResult()
+	if result.Success, err = p.handler.PullMsg(args.Size); err != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing pullMsg: "+err.Error())
+		oprot.WriteMessageBegin("pullMsg", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush()
+		return
+	}
+	if err2 := oprot.WriteMessageBegin("pullMsg", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 := result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 := oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 := oprot.Flush(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
 // HELPER FUNCTIONS AND STRUCTURES
 
 type PushMsgArgs struct {
@@ -453,11 +559,11 @@ func (p *PushMsgArgs) readField1(iprot thrift.TProtocol) error {
 	}
 	p.Data = make([]*Message, 0, size)
 	for i := 0; i < size; i++ {
-		_elem15 := NewMessage()
-		if err := _elem15.Read(iprot); err != nil {
-			return fmt.Errorf("%T error reading struct: %s", _elem15)
+		_elem19 := NewMessage()
+		if err := _elem19.Read(iprot); err != nil {
+			return fmt.Errorf("%T error reading struct: %s", _elem19)
 		}
-		p.Data = append(p.Data, _elem15)
+		p.Data = append(p.Data, _elem19)
 	}
 	if err := iprot.ReadListEnd(); err != nil {
 		return fmt.Errorf("error reading list end: %s")
@@ -646,11 +752,11 @@ func (p *PushNewsArgs) readField1(iprot thrift.TProtocol) error {
 	}
 	p.Data = make([]*News, 0, size)
 	for i := 0; i < size; i++ {
-		_elem16 := NewNews()
-		if err := _elem16.Read(iprot); err != nil {
-			return fmt.Errorf("%T error reading struct: %s", _elem16)
+		_elem20 := NewNews()
+		if err := _elem20.Read(iprot); err != nil {
+			return fmt.Errorf("%T error reading struct: %s", _elem20)
 		}
-		p.Data = append(p.Data, _elem16)
+		p.Data = append(p.Data, _elem20)
 	}
 	if err := iprot.ReadListEnd(); err != nil {
 		return fmt.Errorf("error reading list end: %s")
@@ -963,4 +1069,197 @@ func (p *PushStringResult) String() string {
 		return "<nil>"
 	}
 	return fmt.Sprintf("PushStringResult(%+v)", *p)
+}
+
+type PullMsgArgs struct {
+	Size int32 `thrift:"size,1"`
+}
+
+func NewPullMsgArgs() *PullMsgArgs {
+	return &PullMsgArgs{}
+}
+
+func (p *PullMsgArgs) Read(iprot thrift.TProtocol) error {
+	if _, err := iprot.ReadStructBegin(); err != nil {
+		return fmt.Errorf("%T read error", p)
+	}
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+		if err != nil {
+			return fmt.Errorf("%T field %d read error: %s", p, fieldId, err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if err := p.readField1(iprot); err != nil {
+				return err
+			}
+		default:
+			if err := iprot.Skip(fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(); err != nil {
+		return fmt.Errorf("%T read struct end error: %s", p, err)
+	}
+	return nil
+}
+
+func (p *PullMsgArgs) readField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return fmt.Errorf("error reading field 1: %s")
+	} else {
+		p.Size = v
+	}
+	return nil
+}
+
+func (p *PullMsgArgs) Write(oprot thrift.TProtocol) error {
+	if err := oprot.WriteStructBegin("pullMsg_args"); err != nil {
+		return fmt.Errorf("%T write struct begin error: %s", p, err)
+	}
+	if err := p.writeField1(oprot); err != nil {
+		return err
+	}
+	if err := oprot.WriteFieldStop(); err != nil {
+		return fmt.Errorf("%T write field stop error: %s", err)
+	}
+	if err := oprot.WriteStructEnd(); err != nil {
+		return fmt.Errorf("%T write struct stop error: %s", err)
+	}
+	return nil
+}
+
+func (p *PullMsgArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err := oprot.WriteFieldBegin("size", thrift.I32, 1); err != nil {
+		return fmt.Errorf("%T write field begin error 1:size: %s", p, err)
+	}
+	if err := oprot.WriteI32(int32(p.Size)); err != nil {
+		return fmt.Errorf("%T.size (1) field write error: %s", p)
+	}
+	if err := oprot.WriteFieldEnd(); err != nil {
+		return fmt.Errorf("%T write field end error 1:size: %s", p, err)
+	}
+	return err
+}
+
+func (p *PullMsgArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("PullMsgArgs(%+v)", *p)
+}
+
+type PullMsgResult struct {
+	Success []*Message `thrift:"success,0"`
+}
+
+func NewPullMsgResult() *PullMsgResult {
+	return &PullMsgResult{}
+}
+
+func (p *PullMsgResult) Read(iprot thrift.TProtocol) error {
+	if _, err := iprot.ReadStructBegin(); err != nil {
+		return fmt.Errorf("%T read error", p)
+	}
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+		if err != nil {
+			return fmt.Errorf("%T field %d read error: %s", p, fieldId, err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 0:
+			if err := p.readField0(iprot); err != nil {
+				return err
+			}
+		default:
+			if err := iprot.Skip(fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(); err != nil {
+		return fmt.Errorf("%T read struct end error: %s", p, err)
+	}
+	return nil
+}
+
+func (p *PullMsgResult) readField0(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return fmt.Errorf("error reading list being: %s")
+	}
+	p.Success = make([]*Message, 0, size)
+	for i := 0; i < size; i++ {
+		_elem21 := NewMessage()
+		if err := _elem21.Read(iprot); err != nil {
+			return fmt.Errorf("%T error reading struct: %s", _elem21)
+		}
+		p.Success = append(p.Success, _elem21)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return fmt.Errorf("error reading list end: %s")
+	}
+	return nil
+}
+
+func (p *PullMsgResult) Write(oprot thrift.TProtocol) error {
+	if err := oprot.WriteStructBegin("pullMsg_result"); err != nil {
+		return fmt.Errorf("%T write struct begin error: %s", p, err)
+	}
+	switch {
+	default:
+		if err := p.writeField0(oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(); err != nil {
+		return fmt.Errorf("%T write field stop error: %s", err)
+	}
+	if err := oprot.WriteStructEnd(); err != nil {
+		return fmt.Errorf("%T write struct stop error: %s", err)
+	}
+	return nil
+}
+
+func (p *PullMsgResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.Success != nil {
+		if err := oprot.WriteFieldBegin("success", thrift.LIST, 0); err != nil {
+			return fmt.Errorf("%T write field begin error 0:success: %s", p, err)
+		}
+		if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Success)); err != nil {
+			return fmt.Errorf("error writing list begin: %s")
+		}
+		for _, v := range p.Success {
+			if err := v.Write(oprot); err != nil {
+				return fmt.Errorf("%T error writing struct: %s", v)
+			}
+		}
+		if err := oprot.WriteListEnd(); err != nil {
+			return fmt.Errorf("error writing list end: %s")
+		}
+		if err := oprot.WriteFieldEnd(); err != nil {
+			return fmt.Errorf("%T write field end error 0:success: %s", p, err)
+		}
+	}
+	return err
+}
+
+func (p *PullMsgResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("PullMsgResult(%+v)", *p)
 }
