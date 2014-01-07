@@ -327,8 +327,10 @@ func (p *News) String() string {
 }
 
 type Message struct {
-	Title   string `thrift:"title,1"`
-	Content string `thrift:"content,2"`
+	Title      string `thrift:"title,1"`
+	Content    string `thrift:"content,2"`
+	Reason     string `thrift:"reason,3"`
+	CreateTime string `thrift:"create_time,4"`
 }
 
 func NewMessage() *Message {
@@ -354,6 +356,14 @@ func (p *Message) Read(iprot thrift.TProtocol) error {
 			}
 		case 2:
 			if err := p.readField2(iprot); err != nil {
+				return err
+			}
+		case 3:
+			if err := p.readField3(iprot); err != nil {
+				return err
+			}
+		case 4:
+			if err := p.readField4(iprot); err != nil {
 				return err
 			}
 		default:
@@ -389,6 +399,24 @@ func (p *Message) readField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *Message) readField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return fmt.Errorf("error reading field 3: %s")
+	} else {
+		p.Reason = v
+	}
+	return nil
+}
+
+func (p *Message) readField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return fmt.Errorf("error reading field 4: %s")
+	} else {
+		p.CreateTime = v
+	}
+	return nil
+}
+
 func (p *Message) Write(oprot thrift.TProtocol) error {
 	if err := oprot.WriteStructBegin("Message"); err != nil {
 		return fmt.Errorf("%T write struct begin error: %s", p, err)
@@ -397,6 +425,12 @@ func (p *Message) Write(oprot thrift.TProtocol) error {
 		return err
 	}
 	if err := p.writeField2(oprot); err != nil {
+		return err
+	}
+	if err := p.writeField3(oprot); err != nil {
+		return err
+	}
+	if err := p.writeField4(oprot); err != nil {
 		return err
 	}
 	if err := oprot.WriteFieldStop(); err != nil {
@@ -430,6 +464,32 @@ func (p *Message) writeField2(oprot thrift.TProtocol) (err error) {
 	}
 	if err := oprot.WriteFieldEnd(); err != nil {
 		return fmt.Errorf("%T write field end error 2:content: %s", p, err)
+	}
+	return err
+}
+
+func (p *Message) writeField3(oprot thrift.TProtocol) (err error) {
+	if err := oprot.WriteFieldBegin("reason", thrift.STRING, 3); err != nil {
+		return fmt.Errorf("%T write field begin error 3:reason: %s", p, err)
+	}
+	if err := oprot.WriteString(string(p.Reason)); err != nil {
+		return fmt.Errorf("%T.reason (3) field write error: %s", p)
+	}
+	if err := oprot.WriteFieldEnd(); err != nil {
+		return fmt.Errorf("%T write field end error 3:reason: %s", p, err)
+	}
+	return err
+}
+
+func (p *Message) writeField4(oprot thrift.TProtocol) (err error) {
+	if err := oprot.WriteFieldBegin("create_time", thrift.STRING, 4); err != nil {
+		return fmt.Errorf("%T write field begin error 4:create_time: %s", p, err)
+	}
+	if err := oprot.WriteString(string(p.CreateTime)); err != nil {
+		return fmt.Errorf("%T.create_time (4) field write error: %s", p)
+	}
+	if err := oprot.WriteFieldEnd(); err != nil {
+		return fmt.Errorf("%T write field end error 4:create_time: %s", p, err)
 	}
 	return err
 }
