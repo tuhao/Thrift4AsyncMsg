@@ -61,7 +61,6 @@ class SyncDB(DataService.Iface):
 					repo.execute(sql)
 		except Exception, e:
 			print e
-			repo.rollback()
 			return False
 		else:
 			return True
@@ -81,7 +80,6 @@ class SyncDB(DataService.Iface):
 						repo.execute(sql)
 		except Exception, e:
 			print e
-			repo.rollback()
 			return False
 		else:
 			return True
