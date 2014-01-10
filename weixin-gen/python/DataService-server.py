@@ -20,7 +20,7 @@ CFG_SESSION = 'connect'
 class WeixinDB:
 
 	def __init__(self,host,user,passwd,db_name,charset):
-		self.conn = MySQLdb.connect(host,user,passwd,db_name,charset=charset)
+		self.conn = MySQLdb.connect(host,user,passwd,db_name,charset=charset,cursorclass=MySQLdb.cursors.SSCursor)
 		self.cursor = self.conn.cursor()
 
 	def execute(self,sql_str):
