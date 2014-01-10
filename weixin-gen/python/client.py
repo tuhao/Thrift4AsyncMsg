@@ -19,16 +19,16 @@ def news():
 	title2 = 'test'
 	return [News(title=title1, articles=[a11,a12]),News(title=title2,articles=[a21,a22])]
 
-host = '192.168.1.101'
+host = '192.168.1.102'
 port = 9090
 socket = TSocket.TSocket(host,port)
 transport = TTransport.TFramedTransport(socket)
 protocol = TBinaryProtocol.TBinaryProtocol(transport)
 client = DataService.Client(protocol)
 transport.open()
-#data = msg()
-#print client.pushMsg(data)
-print client.pullMsg(10)
+data = msg()
+print client.pushMsg(data)
+#print client.pullMsg(1000)
 #data = news()
 #print client.pushNews(data)
 transport.close()

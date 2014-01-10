@@ -8,6 +8,7 @@ from ttypes import *
 import DataService
 import ConfigParser
 import MySQLdb
+import MySQLdb.cursors
 import time
 import datetime
 import sys
@@ -98,7 +99,10 @@ class SyncDB(DataService.Iface):
 					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8')))
 				else:
 					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=item[4].encode('utf-8')))
-		except Exception, e:
+		except MemoryError,er:
+			print er
+			return []
+		except Exception,e:
 			print e
 			return []
 		else:
