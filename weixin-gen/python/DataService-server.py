@@ -44,6 +44,7 @@ class WeixinDB:
 
 	def __exit__(self,*kw):
 		self.conn.commit()
+		print 'repo commited'
 
 	def __enter__(self):
 		pass
@@ -100,12 +101,13 @@ class SyncDB(DataService.Iface):
 	def pullMsg(self,size):
 		result = list()
 		try:
-			sql = """select * from signature_message order by id desc limit """ + str(size)
-			for item in repo.execute_query(sql):
-				if item[4] is None:
-					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8')))
-				else:
-					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=item[4].encode('utf-8')))
+			with repo:
+				sql = """select * from signature_message order by id desc limit """ + str(size)
+				for item in repo.execute_query(sql):
+					if item[4] is None:
+						result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8')))
+					else:
+						result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=item[4].encode('utf-8')))
 		except MemoryError,er:
 			print er
 			return []
