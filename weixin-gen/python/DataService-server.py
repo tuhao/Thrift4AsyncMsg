@@ -44,7 +44,6 @@ class WeixinDB:
 
 	def __exit__(self,*kw):
 		self.conn.commit()
-		print 'repo commited'
 
 	def __enter__(self):
 		pass
@@ -68,6 +67,7 @@ class SyncDB(DataService.Iface):
 				for msg in data:
 					sql = 'insert into signature_message (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
 					repo.execute_insert(sql)
+			print 'insert %d messages at %s' % (len(data),time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 		except Exception, e:
 			print e
 			return False
@@ -108,6 +108,7 @@ class SyncDB(DataService.Iface):
 						result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8')))
 					else:
 						result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=item[4].encode('utf-8')))
+			print 'pull %d messages at %s' % (size,time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 		except MemoryError,er:
 			print er
 			return []
