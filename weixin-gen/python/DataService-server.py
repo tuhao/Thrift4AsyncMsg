@@ -24,7 +24,14 @@ class WeixinDB:
 		self.conn = MySQLdb.connect(host,user,passwd,db_name,charset=charset,cursorclass=MySQLdb.cursors.SSCursor)
 		self.cursor = self.conn.cursor()
 
-	def execute(self,sql_str):
+	def execute_insert(self,sql_str):
+		try:
+			self.cursor.execute(sql_str)
+		except Exception, e:
+			print e
+		return ()
+
+	def execute_query(self,sql_str):
 		try:
 			self.cursor.execute(sql_str)
 			return self.cursor.fetchall()
@@ -59,7 +66,7 @@ class SyncDB(DataService.Iface):
 			with repo:
 				for msg in data:
 					sql = 'insert into signature_message (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
-					repo.execute(sql)
+					repo.execute_insert(sql)
 		except Exception, e:
 			print e
 			return False
@@ -73,12 +80,12 @@ class SyncDB(DataService.Iface):
 				create_time = datetime.datetime(*start[:6])
 				for news in data:
 					sql = 'insert into signature_news (title,create_time) values("%s","%s")' % (news.title,create_time)
-					repo.execute(sql)
+					repo.execute_insert()(sql)
 					news_id = repo.last_record()
 					for article in news.articles:
 						sql = 'insert into signature_article (news_id,title,description,pic,url) values (%d,"%s","%s","%s","%s")' % (news_id,
 							article.title,article.description,article.imageurl,article.url)
-						repo.execute(sql)
+						repo.execute_insert(sql)
 		except Exception, e:
 			print e
 			return False
@@ -94,7 +101,7 @@ class SyncDB(DataService.Iface):
 		result = list()
 		try:
 			sql = """select * from signature_message order by id desc limit """ + str(size)
-			for item in repo.execute(sql):
+			for item in repo.execute_query(sql):
 				if item[4] is None:
 					result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8')))
 				else:
