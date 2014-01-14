@@ -65,7 +65,7 @@ class SyncDB(DataService.Iface):
 			create_time = datetime.datetime(*start[:6])
 			with repo:
 				for msg in data:
-					sql = 'insert into signature_message (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
+					sql = 'insert into signature_metadata (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
 					repo.execute_insert(sql)
 			print 'insert %d messages at %s' % (len(data),time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 		except Exception, e:
