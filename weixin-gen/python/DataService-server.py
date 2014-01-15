@@ -65,11 +65,11 @@ class SyncDB(DataService.Iface):
 			create_time = datetime.datetime(*start[:6])
 			with repo:
 				for msg in data:
-					sql = 'insert into signature_metadata (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
+					sql = 'insert into signature_message (title,create_time,content) values ("%s","%s","%s")' % (msg.title,create_time,msg.content)
 					repo.execute_insert(sql)
 			print 'insert %d messages at %s' % (len(data),time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 		except Exception, e:
-			print e
+			print e + ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 			return False
 		else:
 			return True
@@ -88,7 +88,7 @@ class SyncDB(DataService.Iface):
 							article.title,article.description,article.imageurl,article.url)
 						repo.execute_insert(sql)
 		except Exception, e:
-			print e
+			print e + ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 			return False
 		else:
 			return True
@@ -113,7 +113,7 @@ class SyncDB(DataService.Iface):
 			print er
 			return []
 		except Exception,e:
-			print e
+			print e + ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 			return []
 		else:
 			return result
