@@ -69,7 +69,8 @@ class SyncDB(DataService.Iface):
 					repo.execute_insert(sql)
 			print 'insert %d messages at %s' % (len(data),time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 		except Exception, e:
-			print e + ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+			print e
+			print ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 			return False
 		else:
 			return True
@@ -88,7 +89,8 @@ class SyncDB(DataService.Iface):
 							article.title,article.description,article.imageurl,article.url)
 						repo.execute_insert(sql)
 		except Exception, e:
-			print e + ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+			print e
+			print ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 			return False
 		else:
 			return True
@@ -113,7 +115,8 @@ class SyncDB(DataService.Iface):
 			print er
 			return []
 		except Exception,e:
-			print e + ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+			print e
+			print ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
 			return []
 		else:
 			return result
