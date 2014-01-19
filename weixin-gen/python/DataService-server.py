@@ -121,8 +121,28 @@ class SyncDB(DataService.Iface):
 		else:
 			return result
 
+	def pullMsgBySort(self,size,sort_id):
+		result = list()
+		try:
+			with repo:
+				sql = "select * from signature_message where sort_id = %d order by id desc limit %d " % (int(sort_id),int(size))
+				for item in repo.execute_query(sql):
+					if item[4] is None:
+						result.append(Message(id=int(item[0]),title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=str(item[4]).encode('utf-8'),sort_id=int(item[5])))
+					else:
+						result.append(Message(id=int(item[0]),title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=item[4].encode('utf-8'),sort_id=int(item[5])))
+		except MemoryError,er:
+			print er
+			return []
+		except Exception,e:
+			print e
+			print ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+			return []
+		else:
+			return result
+
 argi = 1
-server_address = '192.168.1.101'
+server_address = '192.168.1.103'
 port = 9090
 
 if len(sys.argv) > 1:
