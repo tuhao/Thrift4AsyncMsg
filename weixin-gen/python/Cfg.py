@@ -1,8 +1,10 @@
 #coding=utf-8
 
 import ConfigParser
+import os
 
-CFG_FILE = 'mysql.cfg'
+CFG_FILE = os.path.dirname(__file__) + '/mysql.cfg'
+print CFG_FILE
 CFG_SESSION = 'connect'
 
 config = ConfigParser.ConfigParser()
