@@ -17,7 +17,7 @@ class ThriftHandler(DataService.Iface):
 
 	def pushMsg(self,data):
 		count = 0
-		create_time = time.strftime('%Y-%m-%d %H:%M:%S',datetime.datetime.now())
+		create_time =  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		with repo:
 			for msg in data:
 				try:
@@ -60,7 +60,7 @@ class ThriftHandler(DataService.Iface):
 
 	def pullMsg(self,size):
 		count = 0
-		create_time = time.strftime('%Y-%m-%d %H:%M:%S',datetime.datetime.now())
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		result = list()
 		with repo:
 			sql = "select * from signature_message order by id desc limit %d " % (int(size))
@@ -90,7 +90,7 @@ class ThriftHandler(DataService.Iface):
 	def pullMsgBySort(self,size,sort_id):
 		result = list()
 		count = 0
-		create_time = time.strftime('%Y-%m-%d %H:%M:%S',datetime.datetime.now())
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		with repo:
 				try:
 					sql = "select * from signature_message where sort_id = %d order by id desc limit %d " % (int(sort_id),int(size))
