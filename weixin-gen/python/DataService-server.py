@@ -99,7 +99,7 @@ class ThriftHandler(DataService.Iface):
 					print e
 					print ' at %s' % (create_time)
 				else:
-					for item in query_tuple(sql):
+					for item in query_tuple:
 						try:
 							reason = item[4]
 							if reason is None:
