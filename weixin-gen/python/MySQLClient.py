@@ -13,9 +13,9 @@ class WeixinDB:
 		self.conn = MySQLdb.connect(host,user,passwd,db_name,charset='utf8',cursorclass=MySQLdb.cursors.SSCursor)
 		self.cursor = self.conn.cursor()
 
-	def execute_insert(self,sql_str):
+	def execute_insert(self,sql_str,*params):
 		try:
-			self.cursor.execute(sql_str)
+			self.cursor.execute(sql_str,params[0])
 		except Exception, e:
 			print e
 		return ()

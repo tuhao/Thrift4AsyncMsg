@@ -6,8 +6,8 @@ from thrift.protocol import TBinaryProtocol
 import DataService
 
 def msg():
-	msg1 = Message(title='what',content='coding...')
-	msg2 = Message(title='Sunday',content='enjoy...')
+	msg1 = Message(title='what',content='coding...\\')
+	msg2 = Message(title='Sunday',content='enjoy..."\\.a"')
 	return [msg1,msg2]
 
 def news():
