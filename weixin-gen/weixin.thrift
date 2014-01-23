@@ -25,4 +25,5 @@ service DataService {
 	bool pushString(1: string data),
 	list<Message> pullMsg(1: i32 size),
 	list<Message> pullMsgBySort(1: i32 size,2: i32 sort_id),
+	bool deleteMsgs(1: list<i32> ids),
 }

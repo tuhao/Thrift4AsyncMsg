@@ -119,6 +119,24 @@ class ThriftHandler(DataService.Iface):
 		print 'pull %d messages at %s' % (count,create_time)
 		return result
 
+	def deleteMsgs(self,ids):
+		action_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		repo = WeixinDB()
+		count = 0
+		with repo:
+			try:
+				for msg_id in ids:
+					sql = "delete from signature_message where id = %d " % (int(msg_id))
+					if repo.execute_delete(sql):
+						count = count + 1
+			except Exception, e:
+				print e
+				print ' at %s' % (action_time)
+				return False
+			else:
+				print 'delete %d messages at %s' %(count,action_time)
+				return True
+
 argi = 1
 server_address = '192.168.1.102'
 port = 9090
