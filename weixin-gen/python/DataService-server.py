@@ -22,8 +22,8 @@ class ThriftHandler(DataService.Iface):
 		with repo:
 			for msg in data:
 				try:
-					sql = 'insert into signature_message (title,create_time,content) values (%s,%s,%s)' 
-					repo.execute_insert(sql,(msg.title,create_time,msg.content))
+					sql = 'insert into approve_metadata (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
+					repo.execute_insert(sql,(msg.title,create_time,msg.content,'None',1))
 					count = count + 1
 				except Exception, e:
 					print e
@@ -66,7 +66,7 @@ class ThriftHandler(DataService.Iface):
 		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		result = list()
 		with repo:
-			sql = "select * from signature_message order by id desc limit %d " % (int(size))
+			sql = "select * from approve_metadata order by id desc limit %d " % (int(size))
 			try:
 				query_tuple = repo.execute_query(sql)
 			except Exception,e:
@@ -97,7 +97,7 @@ class ThriftHandler(DataService.Iface):
 		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		with repo:
 				try:
-					sql = "select * from signature_message where sort_id = %d order by id desc limit %d " % (int(sort_id),int(size))
+					sql = "select * from approve_metadata where sort_id = %d order by id desc limit %d " % (int(sort_id),int(size))
 					query_tuple = repo.execute_query(sql)
 				except Exception,e:
 					print e
@@ -126,7 +126,7 @@ class ThriftHandler(DataService.Iface):
 		with repo:
 			try:
 				for msg_id in ids:
-					sql = "delete from signature_message where id = %d " % (int(msg_id))
+					sql = "delete from approve_metadata where id = %d " % (int(msg_id))
 					if repo.execute_delete(sql):
 						count = count + 1
 			except Exception, e:
