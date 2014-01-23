@@ -6,12 +6,10 @@ import MySQLdb.cursors
 class WeixinDB:
 
 	def __init__(self):
-		host = cfg('host')
-		user = cfg('user')
-		passwd = cfg('passwd')
-		db_name = cfg('db_name')
-		self.conn = MySQLdb.connect(host,user,passwd,db_name,charset='utf8',cursorclass=MySQLdb.cursors.SSCursor)
-		self.cursor = self.conn.cursor()
+		self.host = cfg('host')
+		self.user = cfg('user')
+		self.passwd = cfg('passwd')
+		self.db_name = cfg('db_name')
 
 	def execute_insert(self,sql_str,*params):
 		try:
@@ -31,16 +29,15 @@ class WeixinDB:
 	def last_record(self):
 		return self.cursor.lastrowid
 
-	def __exit__(self,*kw):
-		self.conn.commit()
 
 	def __enter__(self):
-		pass
+		self.conn = MySQLdb.connect(self.host,self.user,self.passwd,self.db_name,charset='utf8',cursorclass=MySQLdb.cursors.SSCursor)
+		self.cursor = self.conn.cursor()
 
-	def rollback(self):
-		self.conn.rollback()
-
-	def close(self):
-		self.cursor.close()
-		self.conn.commit()
-		self.conn.close()
+	def __exit__(self,*kw):
+		try:
+			self.cursor.close()
+			self.conn.commit()
+			self.conn.close()
+		except Exception, e:
+			print e

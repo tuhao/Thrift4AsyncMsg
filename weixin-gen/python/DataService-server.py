@@ -16,6 +16,7 @@ sys.setdefaultencoding='utf-8'
 class ThriftHandler(DataService.Iface):
 
 	def pushMsg(self,data):
+		repo =  WeixinDB()
 		count = 0
 		create_time =  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		with repo:
@@ -34,11 +35,12 @@ class ThriftHandler(DataService.Iface):
 			return False
 
 	def pushNews(self,data):
-		try:
-			with repo:
-				start = time.localtime(time.time())
-				create_time = datetime.datetime(*start[:6])
-				for news in data:
+		repo = WeixinDB()
+		with repo:
+			start = time.localtime(time.time())
+			create_time = datetime.datetime(*start[:6])
+			for news in data:
+				try:
 					sql = 'insert into signature_news (title,create_time) values(%s,%s)'
 					repo.execute_insert(sql,(news.title,create_time))
 					news_id = repo.last_record()
@@ -46,12 +48,12 @@ class ThriftHandler(DataService.Iface):
 						sql = 'insert into signature_article (news_id,title,description,pic,url) values (%d,"%s","%s","%s","%s")' % (news_id,
 							article.title,article.description,article.imageurl,article.url)
 						repo.execute_insert(sql)
-		except Exception, e:
-			print e
-			print ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
-			return False
-		else:
-			return True
+				except Exception, e:
+					print e
+					print ' at %s' % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+					return False
+				else:
+					return True
 		
 
 	def pushString(self,data):
@@ -59,6 +61,7 @@ class ThriftHandler(DataService.Iface):
 		return True
 
 	def pullMsg(self,size):
+		repo = WeixinDB()
 		count = 0
 		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		result = list()
@@ -88,6 +91,7 @@ class ThriftHandler(DataService.Iface):
 
 
 	def pullMsgBySort(self,size,sort_id):
+		repo = WeixinDB()
 		result = list()
 		count = 0
 		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -130,8 +134,6 @@ if len(sys.argv) > 1:
     	if sys.argv[argi] == '-cfg':
     		CFG_FILE = sys.argv[argi+1]
 
-
-repo =  WeixinDB()
 transport = TSocket.TServerSocket(server_address,port)
 transportFactory = TTransport.TFramedTransportFactory()
 protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
