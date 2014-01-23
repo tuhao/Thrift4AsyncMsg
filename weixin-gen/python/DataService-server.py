@@ -21,7 +21,7 @@ class ThriftHandler(DataService.Iface):
 		with repo:
 			for msg in data:
 				try:
-					sql = 'insert into signature_message (title,create_time,content) values ("%s","%s","%s")' 
+					sql = 'insert into signature_message (title,create_time,content) values (%s,%s,%s)' 
 					repo.execute_insert(sql,(msg.title,create_time,msg.content))
 					count = count + 1
 				except Exception, e:
@@ -39,7 +39,7 @@ class ThriftHandler(DataService.Iface):
 				start = time.localtime(time.time())
 				create_time = datetime.datetime(*start[:6])
 				for news in data:
-					sql = 'insert into signature_news (title,create_time) values("%s","%s")'
+					sql = 'insert into signature_news (title,create_time) values(%s,%s)'
 					repo.execute_insert(sql,(news.title,create_time))
 					news_id = repo.last_record()
 					for article in news.articles:
