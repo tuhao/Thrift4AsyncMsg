@@ -76,7 +76,7 @@ class ThriftHandler(DataService.Iface):
 						reason = item[4]
 						if reason is None:
 							reason = 'None'
-						result.append(Message(title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=reason.encode('utf-8')))
+						result.append(Message(id=item[0],title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=reason.encode('utf-8'),sort_id=item[5]))
 						count = count + 1
 					except Exception, e:
 						print e
@@ -93,7 +93,7 @@ class ThriftHandler(DataService.Iface):
 		repo = WeixinDB()
 		with repo:
 			try:
-				query_tuple = repo.execute_query(sql_str, ())
+				query_tuple = repo.execute_query(sql_str)
 			except Exception, e:
 				print e
 				print 'at %s ' % (create_time)
@@ -121,7 +121,7 @@ class ThriftHandler(DataService.Iface):
 
 	def pullPaginateMsgBySort(self,start_index,item_num,sort_id):
 		sql_str = "select * from approve_metadata where sort_id = %s order by id desc limit %s,%s "
-		return self.gen_query_tuple(sql_str,(start_index,item_num,sort_id))
+		return self.gen_query_tuple(sql_str,(sort_id,start_index,item_num))
 
 	def getMsgCount(self):
 		sql_str = "select count(*) from approve_metadata "
@@ -148,6 +148,32 @@ class ThriftHandler(DataService.Iface):
 			else:
 				print 'delete %d messages at %s' %(count,action_time)
 				return True
+
+	def pushApprove(self,data):
+		repo =  WeixinDB()
+		count = 0
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		with repo:
+			for msg in data:
+				try:
+					sql = 'insert into signature_message (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
+					repo.execute_insert(sql,(msg.title,create_time,msg.content,'None',1))
+					count = count + 1
+				except Exception, e:
+					print e
+					print ' at %s' % (create_time)
+		print 'insert %d messages at %s' % (count,create_time)
+		return count
+
+	def pullApprove(self,start_index,item_num):
+		sql_str = "select * from signature_message order by id desc limit %s,%s "
+		return self.gen_query_tuple(sql_str, (start_index,item_num))
+
+	def getApproveCount(self):
+		sql_str = "select count(*) from signature_message "
+		return self.gen_query_number(sql_str)
+
+
 
 argi = 1
 server_address = '192.168.1.102'
