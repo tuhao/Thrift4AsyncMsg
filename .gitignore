@@ -1,2 +1,2 @@
-.cfg
-.pyc
+*.cfg
+*.pyc
