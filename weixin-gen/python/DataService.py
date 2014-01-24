@@ -61,6 +61,33 @@ class Iface:
     """
     pass
 
+  def pullPaginateMsg(self, start_index, item_num):
+    """
+    Parameters:
+     - start_index
+     - item_num
+    """
+    pass
+
+  def pullPaginateMsgBySort(self, start_index, item_num, sort_id):
+    """
+    Parameters:
+     - start_index
+     - item_num
+     - sort_id
+    """
+    pass
+
+  def getMsgCount(self):
+    pass
+
+  def getMsgCountBySort(self, sort_id):
+    """
+    Parameters:
+     - sort_id
+    """
+    pass
+
 
 class Client(Iface):
   def __init__(self, iprot, oprot=None):
@@ -251,6 +278,127 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMsgs failed: unknown result");
 
+  def pullPaginateMsg(self, start_index, item_num):
+    """
+    Parameters:
+     - start_index
+     - item_num
+    """
+    self.send_pullPaginateMsg(start_index, item_num)
+    return self.recv_pullPaginateMsg()
+
+  def send_pullPaginateMsg(self, start_index, item_num):
+    self._oprot.writeMessageBegin('pullPaginateMsg', TMessageType.CALL, self._seqid)
+    args = pullPaginateMsg_args()
+    args.start_index = start_index
+    args.item_num = item_num
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_pullPaginateMsg(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = pullPaginateMsg_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "pullPaginateMsg failed: unknown result");
+
+  def pullPaginateMsgBySort(self, start_index, item_num, sort_id):
+    """
+    Parameters:
+     - start_index
+     - item_num
+     - sort_id
+    """
+    self.send_pullPaginateMsgBySort(start_index, item_num, sort_id)
+    return self.recv_pullPaginateMsgBySort()
+
+  def send_pullPaginateMsgBySort(self, start_index, item_num, sort_id):
+    self._oprot.writeMessageBegin('pullPaginateMsgBySort', TMessageType.CALL, self._seqid)
+    args = pullPaginateMsgBySort_args()
+    args.start_index = start_index
+    args.item_num = item_num
+    args.sort_id = sort_id
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_pullPaginateMsgBySort(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = pullPaginateMsgBySort_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "pullPaginateMsgBySort failed: unknown result");
+
+  def getMsgCount(self):
+    self.send_getMsgCount()
+    return self.recv_getMsgCount()
+
+  def send_getMsgCount(self):
+    self._oprot.writeMessageBegin('getMsgCount', TMessageType.CALL, self._seqid)
+    args = getMsgCount_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getMsgCount(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getMsgCount_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMsgCount failed: unknown result");
+
+  def getMsgCountBySort(self, sort_id):
+    """
+    Parameters:
+     - sort_id
+    """
+    self.send_getMsgCountBySort(sort_id)
+    return self.recv_getMsgCountBySort()
+
+  def send_getMsgCountBySort(self, sort_id):
+    self._oprot.writeMessageBegin('getMsgCountBySort', TMessageType.CALL, self._seqid)
+    args = getMsgCountBySort_args()
+    args.sort_id = sort_id
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getMsgCountBySort(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getMsgCountBySort_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMsgCountBySort failed: unknown result");
+
 
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
@@ -262,6 +410,10 @@ class Processor(Iface, TProcessor):
     self._processMap["pullMsg"] = Processor.process_pullMsg
     self._processMap["pullMsgBySort"] = Processor.process_pullMsgBySort
     self._processMap["deleteMsgs"] = Processor.process_deleteMsgs
+    self._processMap["pullPaginateMsg"] = Processor.process_pullPaginateMsg
+    self._processMap["pullPaginateMsgBySort"] = Processor.process_pullPaginateMsgBySort
+    self._processMap["getMsgCount"] = Processor.process_getMsgCount
+    self._processMap["getMsgCountBySort"] = Processor.process_getMsgCountBySort
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -340,6 +492,50 @@ class Processor(Iface, TProcessor):
     result = deleteMsgs_result()
     result.success = self._handler.deleteMsgs(args.ids)
     oprot.writeMessageBegin("deleteMsgs", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pullPaginateMsg(self, seqid, iprot, oprot):
+    args = pullPaginateMsg_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullPaginateMsg_result()
+    result.success = self._handler.pullPaginateMsg(args.start_index, args.item_num)
+    oprot.writeMessageBegin("pullPaginateMsg", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pullPaginateMsgBySort(self, seqid, iprot, oprot):
+    args = pullPaginateMsgBySort_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullPaginateMsgBySort_result()
+    result.success = self._handler.pullPaginateMsgBySort(args.start_index, args.item_num, args.sort_id)
+    oprot.writeMessageBegin("pullPaginateMsgBySort", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getMsgCount(self, seqid, iprot, oprot):
+    args = getMsgCount_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getMsgCount_result()
+    result.success = self._handler.getMsgCount()
+    oprot.writeMessageBegin("getMsgCount", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getMsgCountBySort(self, seqid, iprot, oprot):
+    args = getMsgCountBySort_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getMsgCountBySort_result()
+    result.success = self._handler.getMsgCountBySort(args.sort_id)
+    oprot.writeMessageBegin("getMsgCountBySort", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1098,6 +1294,518 @@ class deleteMsgs_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.BOOL, 0)
       oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class pullPaginateMsg_args:
+  """
+  Attributes:
+   - start_index
+   - item_num
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'start_index', None, None, ), # 1
+    (2, TType.I32, 'item_num', None, None, ), # 2
+  )
+
+  def __init__(self, start_index=None, item_num=None,):
+    self.start_index = start_index
+    self.item_num = item_num
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.start_index = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.item_num = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('pullPaginateMsg_args')
+    if self.start_index is not None:
+      oprot.writeFieldBegin('start_index', TType.I32, 1)
+      oprot.writeI32(self.start_index)
+      oprot.writeFieldEnd()
+    if self.item_num is not None:
+      oprot.writeFieldBegin('item_num', TType.I32, 2)
+      oprot.writeI32(self.item_num)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class pullPaginateMsg_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(Message, Message.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype45, _size42) = iprot.readListBegin()
+          for _i46 in xrange(_size42):
+            _elem47 = Message()
+            _elem47.read(iprot)
+            self.success.append(_elem47)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('pullPaginateMsg_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter48 in self.success:
+        iter48.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class pullPaginateMsgBySort_args:
+  """
+  Attributes:
+   - start_index
+   - item_num
+   - sort_id
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'start_index', None, None, ), # 1
+    (2, TType.I32, 'item_num', None, None, ), # 2
+    (3, TType.I32, 'sort_id', None, None, ), # 3
+  )
+
+  def __init__(self, start_index=None, item_num=None, sort_id=None,):
+    self.start_index = start_index
+    self.item_num = item_num
+    self.sort_id = sort_id
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.start_index = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.item_num = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.sort_id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('pullPaginateMsgBySort_args')
+    if self.start_index is not None:
+      oprot.writeFieldBegin('start_index', TType.I32, 1)
+      oprot.writeI32(self.start_index)
+      oprot.writeFieldEnd()
+    if self.item_num is not None:
+      oprot.writeFieldBegin('item_num', TType.I32, 2)
+      oprot.writeI32(self.item_num)
+      oprot.writeFieldEnd()
+    if self.sort_id is not None:
+      oprot.writeFieldBegin('sort_id', TType.I32, 3)
+      oprot.writeI32(self.sort_id)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class pullPaginateMsgBySort_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(Message, Message.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype52, _size49) = iprot.readListBegin()
+          for _i53 in xrange(_size49):
+            _elem54 = Message()
+            _elem54.read(iprot)
+            self.success.append(_elem54)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('pullPaginateMsgBySort_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter55 in self.success:
+        iter55.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCount_args:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCount_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCount_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCount_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCountBySort_args:
+  """
+  Attributes:
+   - sort_id
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'sort_id', None, None, ), # 1
+  )
+
+  def __init__(self, sort_id=None,):
+    self.sort_id = sort_id
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.sort_id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCountBySort_args')
+    if self.sort_id is not None:
+      oprot.writeFieldBegin('sort_id', TType.I32, 1)
+      oprot.writeI32(self.sort_id)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCountBySort_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCountBySort_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

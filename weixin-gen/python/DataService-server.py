@@ -54,22 +54,20 @@ class ThriftHandler(DataService.Iface):
 					return False
 				else:
 					return True
-		
 
 	def pushString(self,data):
 		print data
 		return True
 
-	def pullMsg(self,size):
-		repo = WeixinDB()
+	def gen_query_tuple(self,sql_str,*param):
 		count = 0
-		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 		result = list()
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		repo = WeixinDB()
 		with repo:
-			sql = "select * from approve_metadata order by id desc limit %d " % (int(size))
 			try:
-				query_tuple = repo.execute_query(sql)
-			except Exception,e:
+				query_tuple = repo.execute_query(sql_str,param[0]) 
+			except Exception, e:
 				print e
 				print ' at %s' % (create_time)
 			else:
@@ -84,40 +82,54 @@ class ThriftHandler(DataService.Iface):
 						print e
 						print ' at %s' % (create_time)
 					except MemoryError,er:
-							print er
-							print ' at %s' % (create_time)
+						print er
+						print ' at %s' % (create_time)
 		print 'pull %d messages at %s' % (count,create_time)
 		return result
 
+	def gen_query_number(self,sql_str):
+		result = 0
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		repo = WeixinDB()
+		with repo:
+			try:
+				query_tuple = repo.execute_query(sql_str, ())
+			except Exception, e:
+				print e
+				print 'at %s ' % (create_time)
+			else:
+				for item in query_tuple:
+					try:
+						result = int(item[0])
+						break
+					except Exception, e:
+						print e
+						print ' at %s' % (create_time)
+		return result
+
+	def pullMsg(self,size):
+		sql_str = "select * from approve_metadata order by id desc limit %s "
+		return self.gen_query_tuple(sql_str, (size))
 
 	def pullMsgBySort(self,size,sort_id):
-		repo = WeixinDB()
-		result = list()
-		count = 0
-		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		with repo:
-				try:
-					sql = "select * from approve_metadata where sort_id = %d order by id desc limit %d " % (int(sort_id),int(size))
-					query_tuple = repo.execute_query(sql)
-				except Exception,e:
-					print e
-					print ' at %s' % (create_time)
-				else:
-					for item in query_tuple:
-						try:
-							reason = item[4]
-							if reason is None:
-								reason = 'None'
-							result.append(Message(id=int(item[0]),title=item[1].encode('utf-8'),create_time=str(item[2]),content=item[3].encode('utf-8'),reason=reason.encode('utf-8'),sort_id=int(item[5])))
-							count = count + 1
-						except Exception, e:
-							print e
-							print ' at %s' % (create_time)
-						except MemoryError,er:
-							print er
-							print ' at %s' % (create_time)
-		print 'pull %d messages at %s' % (count,create_time)
-		return result
+		sql_str = "select * from approve_metadata where sort_id = %s order by id desc limit %s "
+		return self.gen_query_tuple(sql_str, (sort_id,size))
+
+	def pullPaginateMsg(self,start_index,item_num):
+		sql_str = "select * from approve_metadata order by id desc limit %s,%s "
+		return self.gen_query_tuple(sql_str, (start_index,item_num))
+
+	def pullPaginateMsgBySort(self,start_index,item_num,sort_id):
+		sql_str = "select * from approve_metadata where sort_id = %s order by id desc limit %s,%s "
+		return self.gen_query_tuple(sql_str,(start_index,item_num,sort_id))
+
+	def getMsgCount(self):
+		sql_str = "select count(*) from approve_metadata "
+		return self.gen_query_number(sql_str)
+
+	def getMsgCountBySort(self,sort_id):
+		sql_str = "select count(*) from approve_metadata where sort_id = %d " % (sort_id)
+		return self.gen_query_number(sql_str)
 
 	def deleteMsgs(self,ids):
 		action_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')

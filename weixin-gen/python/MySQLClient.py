@@ -27,9 +27,12 @@ class WeixinDB:
 		else:
 			return True
 
-	def execute_query(self,sql_str):
+	def execute_query(self,sql_str,*params):
 		try:
-			self.cursor.execute(sql_str)
+			if len(params) == 0:
+				self.cursor.execute(sql_str)
+			else:
+				self.cursor.execute(sql_str,params[0])
 			return self.cursor.fetchall()
 		except Exception, e:
 			print e
