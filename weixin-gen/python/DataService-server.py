@@ -157,7 +157,7 @@ class ThriftHandler(DataService.Iface):
 			for msg in data:
 				try:
 					sql = 'insert into signature_message (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
-					repo.execute_insert(sql,(msg.title,create_time,msg.content,'None',1))
+					repo.execute_insert(sql,(msg.title,create_time,msg.content,msg.reason,msg.sort_id))
 					count = count + 1
 				except Exception, e:
 					print e
