@@ -33,5 +33,5 @@ service DataService {
 	i32 getApproveCount(),
 	list<Message> pullApprove(1: i32 start_index,2: i32 item_num),
 	i32 pushApprove(1: list<Message> data),
-
+	bool msgSortMark(1: list<i32> ids,2: i32 sort_id),
 }

@@ -173,6 +173,21 @@ class ThriftHandler(DataService.Iface):
 		sql_str = "select count(*) from signature_message "
 		return self.gen_query_number(sql_str)
 
+	def msgSortMark(self,ids,sort_id):
+		repo = WeixinDB()
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		count = 0
+		with repo:
+			for msg_id in ids:
+				try:
+					sql_str = 'update approve_metadata set sort_id = %d where id = %d ' % (sort_id,msg_id)
+					repo.execute_query(sql_str)
+					count = count + 1
+				except Exception, e:
+					print e
+					print ' at %s' % (create_time)
+		print 'update %d messages sort_id to %d at %s' %(count,sort_id,create_time)
+		return true
 
 
 argi = 1
