@@ -29,7 +29,7 @@ class ThriftHandler(DataService.Iface):
 					print e
 					print ' at %s' % (create_time)
 		print 'insert %d messages at %s' % (count,create_time)
-		if count > 0:
+		if count == len(data):
 			return True
 		else:
 			return False
@@ -136,18 +136,20 @@ class ThriftHandler(DataService.Iface):
 		repo = WeixinDB()
 		count = 0
 		with repo:
-			try:
-				for msg_id in ids:
-					sql = "delete from approve_metadata where id = %d " % (int(msg_id))
+			for msg_id in ids:
+				sql = "delete from approve_metadata where id = %d " % (int(msg_id))
+				try:
 					if repo.execute_delete(sql):
 						count = count + 1
-			except Exception, e:
-				print e
-				print ' at %s' % (action_time)
-				return False
-			else:
-				print 'delete %d messages at %s' %(count,action_time)
-				return True
+				except Exception, e:
+					print e
+					print ' at %s' % (action_time)
+				else:
+					print 'delete %d messages at %s' %(count,action_time)
+					if count == len(ids):
+						return True
+					else:
+						return False
 
 	def pushApprove(self,data):
 		repo =  WeixinDB()
@@ -187,7 +189,7 @@ class ThriftHandler(DataService.Iface):
 					print e
 					print ' at %s' % (create_time)
 		print 'update %d messages sort_id to %d at %s' %(count,sort_id,create_time)
-		if count > 0:
+		if count == len(ids) :
 			return True
 		else:
 			return False
