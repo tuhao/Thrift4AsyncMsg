@@ -28,7 +28,7 @@ class ThriftHandler(DataService.Iface):
 				except Exception, e:
 					print e
 					print ' at %s' % (create_time)
-		print 'insert %d messages at %s' % (count,create_time)
+		print 'insert %d messages at %s to approve_metadata' % (count,create_time)
 		if count == len(data):
 			return True
 		else:
@@ -84,7 +84,7 @@ class ThriftHandler(DataService.Iface):
 					except MemoryError,er:
 						print er
 						print ' at %s' % (create_time)
-		print 'pull %d messages at %s' % (count,create_time)
+		print 'pull %d messages at %s ' % (count,create_time)
 		return result
 
 	def gen_query_number(self,sql_str):
@@ -182,7 +182,7 @@ class ThriftHandler(DataService.Iface):
 				except Exception, e:
 					print e
 					print ' at %s' % (create_time)
-		print 'insert %d messages at %s' % (count,create_time)
+		print 'insert %d messages at %s to signature_message'  % (count,create_time)
 		return count
 
 	def pullApprove(self,start_index,item_num):
@@ -206,7 +206,7 @@ class ThriftHandler(DataService.Iface):
 				except Exception, e:
 					print e
 					print ' at %s' % (create_time)
-		print 'update %d messages sort_id to %d at %s' %(count,sort_id,create_time)
+		print 'update %d messages sort_id to %d at %s in approve_metadata' %(count,sort_id,create_time)
 		if count == len(ids) :
 			return True
 		else:
