@@ -61,6 +61,13 @@ class Iface:
     """
     pass
 
+  def deleteMeta(self, ids):
+    """
+    Parameters:
+     - ids
+    """
+    pass
+
   def pullPaginateMsg(self, start_index, item_num):
     """
     Parameters:
@@ -303,6 +310,36 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMsgs failed: unknown result");
+
+  def deleteMeta(self, ids):
+    """
+    Parameters:
+     - ids
+    """
+    self.send_deleteMeta(ids)
+    return self.recv_deleteMeta()
+
+  def send_deleteMeta(self, ids):
+    self._oprot.writeMessageBegin('deleteMeta', TMessageType.CALL, self._seqid)
+    args = deleteMeta_args()
+    args.ids = ids
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteMeta(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteMeta_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMeta failed: unknown result");
 
   def pullPaginateMsg(self, start_index, item_num):
     """
@@ -555,6 +592,7 @@ class Processor(Iface, TProcessor):
     self._processMap["pullMsg"] = Processor.process_pullMsg
     self._processMap["pullMsgBySort"] = Processor.process_pullMsgBySort
     self._processMap["deleteMsgs"] = Processor.process_deleteMsgs
+    self._processMap["deleteMeta"] = Processor.process_deleteMeta
     self._processMap["pullPaginateMsg"] = Processor.process_pullPaginateMsg
     self._processMap["pullPaginateMsgBySort"] = Processor.process_pullPaginateMsgBySort
     self._processMap["getMsgCount"] = Processor.process_getMsgCount
@@ -641,6 +679,17 @@ class Processor(Iface, TProcessor):
     result = deleteMsgs_result()
     result.success = self._handler.deleteMsgs(args.ids)
     oprot.writeMessageBegin("deleteMsgs", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deleteMeta(self, seqid, iprot, oprot):
+    args = deleteMeta_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deleteMeta_result()
+    result.success = self._handler.deleteMeta(args.ids)
+    oprot.writeMessageBegin("deleteMeta", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1506,6 +1555,133 @@ class deleteMsgs_result:
   def __ne__(self, other):
     return not (self == other)
 
+class deleteMeta_args:
+  """
+  Attributes:
+   - ids
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
+  )
+
+  def __init__(self, ids=None,):
+    self.ids = ids
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.ids = []
+          (_etype45, _size42) = iprot.readListBegin()
+          for _i46 in xrange(_size42):
+            _elem47 = iprot.readI32();
+            self.ids.append(_elem47)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('deleteMeta_args')
+    if self.ids is not None:
+      oprot.writeFieldBegin('ids', TType.LIST, 1)
+      oprot.writeListBegin(TType.I32, len(self.ids))
+      for iter48 in self.ids:
+        oprot.writeI32(iter48)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class deleteMeta_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('deleteMeta_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class pullPaginateMsg_args:
   """
   Attributes:
@@ -1603,11 +1779,11 @@ class pullPaginateMsg_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype45, _size42) = iprot.readListBegin()
-          for _i46 in xrange(_size42):
-            _elem47 = Message()
-            _elem47.read(iprot)
-            self.success.append(_elem47)
+          (_etype52, _size49) = iprot.readListBegin()
+          for _i53 in xrange(_size49):
+            _elem54 = Message()
+            _elem54.read(iprot)
+            self.success.append(_elem54)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1624,8 +1800,8 @@ class pullPaginateMsg_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter48 in self.success:
-        iter48.write(oprot)
+      for iter55 in self.success:
+        iter55.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1755,11 +1931,11 @@ class pullPaginateMsgBySort_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype52, _size49) = iprot.readListBegin()
-          for _i53 in xrange(_size49):
-            _elem54 = Message()
-            _elem54.read(iprot)
-            self.success.append(_elem54)
+          (_etype59, _size56) = iprot.readListBegin()
+          for _i60 in xrange(_size56):
+            _elem61 = Message()
+            _elem61.read(iprot)
+            self.success.append(_elem61)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1776,8 +1952,8 @@ class pullPaginateMsgBySort_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter55 in self.success:
-        iter55.write(oprot)
+      for iter62 in self.success:
+        iter62.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2216,11 +2392,11 @@ class pullApprove_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype59, _size56) = iprot.readListBegin()
-          for _i60 in xrange(_size56):
-            _elem61 = Message()
-            _elem61.read(iprot)
-            self.success.append(_elem61)
+          (_etype66, _size63) = iprot.readListBegin()
+          for _i67 in xrange(_size63):
+            _elem68 = Message()
+            _elem68.read(iprot)
+            self.success.append(_elem68)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2237,8 +2413,8 @@ class pullApprove_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter62 in self.success:
-        iter62.write(oprot)
+      for iter69 in self.success:
+        iter69.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2285,11 +2461,11 @@ class pushApprove_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.data = []
-          (_etype66, _size63) = iprot.readListBegin()
-          for _i67 in xrange(_size63):
-            _elem68 = Message()
-            _elem68.read(iprot)
-            self.data.append(_elem68)
+          (_etype73, _size70) = iprot.readListBegin()
+          for _i74 in xrange(_size70):
+            _elem75 = Message()
+            _elem75.read(iprot)
+            self.data.append(_elem75)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2306,8 +2482,8 @@ class pushApprove_args:
     if self.data is not None:
       oprot.writeFieldBegin('data', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.data))
-      for iter69 in self.data:
-        iter69.write(oprot)
+      for iter76 in self.data:
+        iter76.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2416,10 +2592,10 @@ class msgSortMark_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.ids = []
-          (_etype73, _size70) = iprot.readListBegin()
-          for _i74 in xrange(_size70):
-            _elem75 = iprot.readI32();
-            self.ids.append(_elem75)
+          (_etype80, _size77) = iprot.readListBegin()
+          for _i81 in xrange(_size77):
+            _elem82 = iprot.readI32();
+            self.ids.append(_elem82)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2441,8 +2617,8 @@ class msgSortMark_args:
     if self.ids is not None:
       oprot.writeFieldBegin('ids', TType.LIST, 1)
       oprot.writeListBegin(TType.I32, len(self.ids))
-      for iter76 in self.ids:
-        oprot.writeI32(iter76)
+      for iter83 in self.ids:
+        oprot.writeI32(iter83)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.sort_id is not None:

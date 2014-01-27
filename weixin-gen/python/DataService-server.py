@@ -137,6 +137,25 @@ class ThriftHandler(DataService.Iface):
 		count = 0
 		with repo:
 			for msg_id in ids:
+				sql = "delete from signature_message where id = %d " % (int(msg_id))
+				try:
+					if repo.execute_delete(sql):
+						count = count + 1
+				except Exception, e:
+					print e
+					print ' at %s' % (action_time)
+			print 'delete %d messages at %s from signature_message' %(count,action_time)
+			if count == len(ids):
+				return True
+			else:
+				return False
+
+	def deleteMeta(self,ids):
+		action_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		repo = WeixinDB()
+		count = 0
+		with repo:
+			for msg_id in ids:
 				sql = "delete from approve_metadata where id = %d " % (int(msg_id))
 				try:
 					if repo.execute_delete(sql):
@@ -144,12 +163,11 @@ class ThriftHandler(DataService.Iface):
 				except Exception, e:
 					print e
 					print ' at %s' % (action_time)
-				else:
-					print 'delete %d messages at %s' %(count,action_time)
-					if count == len(ids):
-						return True
-					else:
-						return False
+			print 'delete %d messages at %s from approve_metadata' %(count,action_time)
+			if count == len(ids):
+				return True
+			else:
+				return False
 
 	def pushApprove(self,data):
 		repo =  WeixinDB()

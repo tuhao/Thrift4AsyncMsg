@@ -26,6 +26,7 @@ service DataService {
 	list<Message> pullMsg(1: i32 size),
 	list<Message> pullMsgBySort(1: i32 size,2: i32 sort_id),
 	bool deleteMsgs(1: list<i32> ids),
+	bool deleteMeta(1: list<i32> ids),
 	list<Message> pullPaginateMsg(1: i32 start_index,2: i32 item_num),
 	list<Message> pullPaginateMsgBySort(1: i32 start_index,2: i32 item_num,3: i32 sort_id),
 	i32 getMsgCount(),
