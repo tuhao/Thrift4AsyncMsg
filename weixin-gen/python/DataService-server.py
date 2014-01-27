@@ -187,7 +187,10 @@ class ThriftHandler(DataService.Iface):
 					print e
 					print ' at %s' % (create_time)
 		print 'update %d messages sort_id to %d at %s' %(count,sort_id,create_time)
-		return true
+		if count > 0:
+			return True
+		else:
+			return False
 
 
 argi = 1
