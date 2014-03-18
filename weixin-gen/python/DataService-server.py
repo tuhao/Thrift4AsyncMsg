@@ -107,6 +107,39 @@ class ThriftHandler(DataService.Iface):
 						print ' at %s' % (create_time)
 		return result
 
+	def gen_push_msg(self,sql_str,data):
+		repo =  WeixinDB()
+		count = 0
+		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		with repo:
+			for msg in data:
+				try:
+					repo.execute_insert(sql_str,(msg.title,create_time,msg.content,msg.reason,msg.sort_id))
+					count = count + 1
+				except Exception, e:
+					print e
+					print ' at %s' % (create_time)
+		print 'insert %d messages at %s to WeixinDB'  % (count,create_time)
+		return count
+
+	def gen_delete_msg(self,sql_str,ids):
+		action_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		repo = WeixinDB()
+		count = 0
+		with repo:
+			for msg_id in ids:
+				try:
+					if repo.execute_delete(sql_str,(int(msg_id))):
+						count = count + 1
+				except Exception, e:
+					print e
+					print ' at %s' % (action_time)
+			print 'delete %d messages at %s from WeixinDB' %(count,action_time)
+			if count == len(ids):
+				return True
+			else:
+				return False
+
 	def pullMsg(self,size):
 		sql_str = "select * from approve_metadata order by id desc limit %s "
 		return self.gen_query_tuple(sql_str, (size))
@@ -131,66 +164,28 @@ class ThriftHandler(DataService.Iface):
 		sql_str = "select count(*) from approve_metadata where sort_id = %d " % (sort_id)
 		return self.gen_query_number(sql_str)
 
-	def deleteMsgs(self,ids):
-		action_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		repo = WeixinDB()
-		count = 0
-		with repo:
-			for msg_id in ids:
-				sql = "delete from signature_message where id = %d " % (int(msg_id))
-				try:
-					if repo.execute_delete(sql):
-						count = count + 1
-				except Exception, e:
-					print e
-					print ' at %s' % (action_time)
-			print 'delete %d messages at %s from signature_message' %(count,action_time)
-			if count == len(ids):
-				return True
-			else:
-				return False
-
-	def deleteMeta(self,ids):
-		action_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		repo = WeixinDB()
-		count = 0
-		with repo:
-			for msg_id in ids:
-				sql = "delete from approve_metadata where id = %d " % (int(msg_id))
-				try:
-					if repo.execute_delete(sql):
-						count = count + 1
-				except Exception, e:
-					print e
-					print ' at %s' % (action_time)
-			print 'delete %d messages at %s from approve_metadata' %(count,action_time)
-			if count == len(ids):
-				return True
-			else:
-				return False
-
 	def pushApprove(self,data):
-		repo =  WeixinDB()
-		count = 0
-		create_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		with repo:
-			for msg in data:
-				try:
-					sql = 'insert into signature_message (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
-					repo.execute_insert(sql,(msg.title,create_time,msg.content,msg.reason,msg.sort_id))
-					count = count + 1
-				except Exception, e:
-					print e
-					print ' at %s' % (create_time)
-		print 'insert %d messages at %s to signature_message'  % (count,create_time)
-		return count
+		sql_str = 'insert into signature_message (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
+		return self.gen_push_msg(sql_str,data)
+
+	def pushDelicious(self,data):
+		sql_str = 'insert into approve_delicious (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
+		return self.gen_push_msg(sql_str, data)
 
 	def pullApprove(self,start_index,item_num):
 		sql_str = "select * from signature_message order by id desc limit %s,%s "
 		return self.gen_query_tuple(sql_str, (start_index,item_num))
 
+	def pullDelicious(self,start_index,item_num):
+		sql_str = "select * from approve_delicious order by id desc limit %s,%s "
+		return self.gen_query_tuple(sql_str, (start_index,item_num))
+
 	def getApproveCount(self):
 		sql_str = "select count(*) from signature_message "
+		return self.gen_query_number(sql_str)
+
+	def getDeliciousCount(self):
+		sql_str = "select count(*) from approve_delicious "
 		return self.gen_query_number(sql_str)
 
 	def msgSortMark(self,ids,sort_id):
@@ -211,6 +206,20 @@ class ThriftHandler(DataService.Iface):
 			return True
 		else:
 			return False
+
+
+	def deleteMsgs(self,ids):
+		sql_str = "delete from signature_message where id = %d "
+		return self.gen_delete_msg(sql_str, ids)
+
+	def deleteMeta(self,ids):
+		sql_str = "delete from approve_metadata where id = %d "
+		return self.gen_delete_msg(sql_str, ids)
+
+	def deleteDelicious(self,ids):
+		sql_str = "delete from approve_delicious where id = %d "
+		return self.gen_delete_msg(sql_str, ids)
+
 
 
 argi = 1

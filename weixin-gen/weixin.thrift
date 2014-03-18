@@ -23,16 +23,24 @@ service DataService {
 	bool pushMsg(1: list<Message> data),
 	bool pushNews(1: list<News> data),
 	bool pushString(1: string data),
-	list<Message> pullMsg(1: i32 size),
-	list<Message> pullMsgBySort(1: i32 size,2: i32 sort_id),
-	bool deleteMsgs(1: list<i32> ids),
+	bool msgSortMark(1: list<i32> ids,2: i32 sort_id),
+
 	bool deleteMeta(1: list<i32> ids),
-	list<Message> pullPaginateMsg(1: i32 start_index,2: i32 item_num),
-	list<Message> pullPaginateMsgBySort(1: i32 start_index,2: i32 item_num,3: i32 sort_id),
 	i32 getMsgCount(),
 	i32 getMsgCountBySort(1: i32 sort_id),
+	list<Message> pullMsg(1: i32 size),
+	list<Message> pullMsgBySort(1: i32 size,2: i32 sort_id),
+	list<Message> pullPaginateMsg(1: i32 start_index,2: i32 item_num),
+	list<Message> pullPaginateMsgBySort(1: i32 start_index,2: i32 item_num,3: i32 sort_id),
+
+	i32 pushApprove(1: list<Message> data),
+	bool deleteMsgs(1: list<i32> ids),
 	i32 getApproveCount(),
 	list<Message> pullApprove(1: i32 start_index,2: i32 item_num),
-	i32 pushApprove(1: list<Message> data),
-	bool msgSortMark(1: list<i32> ids,2: i32 sort_id),
+
+	i32 pushDelicious(1: list<Message> data),
+	bool deleteDelicious(1: list<i32> ids),
+	i32 getDeliciousCount(),
+	list<Message> pullDelicious(1: i32 start_index,2: i32 item_num),
+	
 }

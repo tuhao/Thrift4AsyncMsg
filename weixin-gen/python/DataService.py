@@ -39,6 +39,31 @@ class Iface:
     """
     pass
 
+  def msgSortMark(self, ids, sort_id):
+    """
+    Parameters:
+     - ids
+     - sort_id
+    """
+    pass
+
+  def deleteMeta(self, ids):
+    """
+    Parameters:
+     - ids
+    """
+    pass
+
+  def getMsgCount(self):
+    pass
+
+  def getMsgCountBySort(self, sort_id):
+    """
+    Parameters:
+     - sort_id
+    """
+    pass
+
   def pullMsg(self, size):
     """
     Parameters:
@@ -51,20 +76,6 @@ class Iface:
     Parameters:
      - size
      - sort_id
-    """
-    pass
-
-  def deleteMsgs(self, ids):
-    """
-    Parameters:
-     - ids
-    """
-    pass
-
-  def deleteMeta(self, ids):
-    """
-    Parameters:
-     - ids
     """
     pass
 
@@ -85,13 +96,17 @@ class Iface:
     """
     pass
 
-  def getMsgCount(self):
-    pass
-
-  def getMsgCountBySort(self, sort_id):
+  def pushApprove(self, data):
     """
     Parameters:
-     - sort_id
+     - data
+    """
+    pass
+
+  def deleteMsgs(self, ids):
+    """
+    Parameters:
+     - ids
     """
     pass
 
@@ -106,18 +121,28 @@ class Iface:
     """
     pass
 
-  def pushApprove(self, data):
+  def pushDelicious(self, data):
     """
     Parameters:
      - data
     """
     pass
 
-  def msgSortMark(self, ids, sort_id):
+  def deleteDelicious(self, ids):
     """
     Parameters:
      - ids
-     - sort_id
+    """
+    pass
+
+  def getDeliciousCount(self):
+    pass
+
+  def pullDelicious(self, start_index, item_num):
+    """
+    Parameters:
+     - start_index
+     - item_num
     """
     pass
 
@@ -219,6 +244,123 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "pushString failed: unknown result");
 
+  def msgSortMark(self, ids, sort_id):
+    """
+    Parameters:
+     - ids
+     - sort_id
+    """
+    self.send_msgSortMark(ids, sort_id)
+    return self.recv_msgSortMark()
+
+  def send_msgSortMark(self, ids, sort_id):
+    self._oprot.writeMessageBegin('msgSortMark', TMessageType.CALL, self._seqid)
+    args = msgSortMark_args()
+    args.ids = ids
+    args.sort_id = sort_id
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_msgSortMark(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = msgSortMark_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "msgSortMark failed: unknown result");
+
+  def deleteMeta(self, ids):
+    """
+    Parameters:
+     - ids
+    """
+    self.send_deleteMeta(ids)
+    return self.recv_deleteMeta()
+
+  def send_deleteMeta(self, ids):
+    self._oprot.writeMessageBegin('deleteMeta', TMessageType.CALL, self._seqid)
+    args = deleteMeta_args()
+    args.ids = ids
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteMeta(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteMeta_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMeta failed: unknown result");
+
+  def getMsgCount(self):
+    self.send_getMsgCount()
+    return self.recv_getMsgCount()
+
+  def send_getMsgCount(self):
+    self._oprot.writeMessageBegin('getMsgCount', TMessageType.CALL, self._seqid)
+    args = getMsgCount_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getMsgCount(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getMsgCount_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMsgCount failed: unknown result");
+
+  def getMsgCountBySort(self, sort_id):
+    """
+    Parameters:
+     - sort_id
+    """
+    self.send_getMsgCountBySort(sort_id)
+    return self.recv_getMsgCountBySort()
+
+  def send_getMsgCountBySort(self, sort_id):
+    self._oprot.writeMessageBegin('getMsgCountBySort', TMessageType.CALL, self._seqid)
+    args = getMsgCountBySort_args()
+    args.sort_id = sort_id
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getMsgCountBySort(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getMsgCountBySort_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMsgCountBySort failed: unknown result");
+
   def pullMsg(self, size):
     """
     Parameters:
@@ -280,66 +422,6 @@ class Client(Iface):
     if result.success is not None:
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "pullMsgBySort failed: unknown result");
-
-  def deleteMsgs(self, ids):
-    """
-    Parameters:
-     - ids
-    """
-    self.send_deleteMsgs(ids)
-    return self.recv_deleteMsgs()
-
-  def send_deleteMsgs(self, ids):
-    self._oprot.writeMessageBegin('deleteMsgs', TMessageType.CALL, self._seqid)
-    args = deleteMsgs_args()
-    args.ids = ids
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_deleteMsgs(self):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = deleteMsgs_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMsgs failed: unknown result");
-
-  def deleteMeta(self, ids):
-    """
-    Parameters:
-     - ids
-    """
-    self.send_deleteMeta(ids)
-    return self.recv_deleteMeta()
-
-  def send_deleteMeta(self, ids):
-    self._oprot.writeMessageBegin('deleteMeta', TMessageType.CALL, self._seqid)
-    args = deleteMeta_args()
-    args.ids = ids
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_deleteMeta(self):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = deleteMeta_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMeta failed: unknown result");
 
   def pullPaginateMsg(self, start_index, item_num):
     """
@@ -407,60 +489,65 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "pullPaginateMsgBySort failed: unknown result");
 
-  def getMsgCount(self):
-    self.send_getMsgCount()
-    return self.recv_getMsgCount()
-
-  def send_getMsgCount(self):
-    self._oprot.writeMessageBegin('getMsgCount', TMessageType.CALL, self._seqid)
-    args = getMsgCount_args()
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_getMsgCount(self):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = getMsgCount_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMsgCount failed: unknown result");
-
-  def getMsgCountBySort(self, sort_id):
+  def pushApprove(self, data):
     """
     Parameters:
-     - sort_id
+     - data
     """
-    self.send_getMsgCountBySort(sort_id)
-    return self.recv_getMsgCountBySort()
+    self.send_pushApprove(data)
+    return self.recv_pushApprove()
 
-  def send_getMsgCountBySort(self, sort_id):
-    self._oprot.writeMessageBegin('getMsgCountBySort', TMessageType.CALL, self._seqid)
-    args = getMsgCountBySort_args()
-    args.sort_id = sort_id
+  def send_pushApprove(self, data):
+    self._oprot.writeMessageBegin('pushApprove', TMessageType.CALL, self._seqid)
+    args = pushApprove_args()
+    args.data = data
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_getMsgCountBySort(self):
+  def recv_pushApprove(self):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = getMsgCountBySort_result()
+    result = pushApprove_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "getMsgCountBySort failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "pushApprove failed: unknown result");
+
+  def deleteMsgs(self, ids):
+    """
+    Parameters:
+     - ids
+    """
+    self.send_deleteMsgs(ids)
+    return self.recv_deleteMsgs()
+
+  def send_deleteMsgs(self, ids):
+    self._oprot.writeMessageBegin('deleteMsgs', TMessageType.CALL, self._seqid)
+    args = deleteMsgs_args()
+    args.ids = ids
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_deleteMsgs(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = deleteMsgs_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteMsgs failed: unknown result");
 
   def getApproveCount(self):
     self.send_getApproveCount()
@@ -519,67 +606,122 @@ class Client(Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "pullApprove failed: unknown result");
 
-  def pushApprove(self, data):
+  def pushDelicious(self, data):
     """
     Parameters:
      - data
     """
-    self.send_pushApprove(data)
-    return self.recv_pushApprove()
+    self.send_pushDelicious(data)
+    return self.recv_pushDelicious()
 
-  def send_pushApprove(self, data):
-    self._oprot.writeMessageBegin('pushApprove', TMessageType.CALL, self._seqid)
-    args = pushApprove_args()
+  def send_pushDelicious(self, data):
+    self._oprot.writeMessageBegin('pushDelicious', TMessageType.CALL, self._seqid)
+    args = pushDelicious_args()
     args.data = data
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_pushApprove(self):
+  def recv_pushDelicious(self):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = pushApprove_result()
+    result = pushDelicious_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "pushApprove failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "pushDelicious failed: unknown result");
 
-  def msgSortMark(self, ids, sort_id):
+  def deleteDelicious(self, ids):
     """
     Parameters:
      - ids
-     - sort_id
     """
-    self.send_msgSortMark(ids, sort_id)
-    return self.recv_msgSortMark()
+    self.send_deleteDelicious(ids)
+    return self.recv_deleteDelicious()
 
-  def send_msgSortMark(self, ids, sort_id):
-    self._oprot.writeMessageBegin('msgSortMark', TMessageType.CALL, self._seqid)
-    args = msgSortMark_args()
+  def send_deleteDelicious(self, ids):
+    self._oprot.writeMessageBegin('deleteDelicious', TMessageType.CALL, self._seqid)
+    args = deleteDelicious_args()
     args.ids = ids
-    args.sort_id = sort_id
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_msgSortMark(self):
+  def recv_deleteDelicious(self):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = msgSortMark_result()
+    result = deleteDelicious_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     if result.success is not None:
       return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "msgSortMark failed: unknown result");
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "deleteDelicious failed: unknown result");
+
+  def getDeliciousCount(self):
+    self.send_getDeliciousCount()
+    return self.recv_getDeliciousCount()
+
+  def send_getDeliciousCount(self):
+    self._oprot.writeMessageBegin('getDeliciousCount', TMessageType.CALL, self._seqid)
+    args = getDeliciousCount_args()
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_getDeliciousCount(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = getDeliciousCount_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "getDeliciousCount failed: unknown result");
+
+  def pullDelicious(self, start_index, item_num):
+    """
+    Parameters:
+     - start_index
+     - item_num
+    """
+    self.send_pullDelicious(start_index, item_num)
+    return self.recv_pullDelicious()
+
+  def send_pullDelicious(self, start_index, item_num):
+    self._oprot.writeMessageBegin('pullDelicious', TMessageType.CALL, self._seqid)
+    args = pullDelicious_args()
+    args.start_index = start_index
+    args.item_num = item_num
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_pullDelicious(self):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = pullDelicious_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "pullDelicious failed: unknown result");
 
 
 class Processor(Iface, TProcessor):
@@ -589,18 +731,22 @@ class Processor(Iface, TProcessor):
     self._processMap["pushMsg"] = Processor.process_pushMsg
     self._processMap["pushNews"] = Processor.process_pushNews
     self._processMap["pushString"] = Processor.process_pushString
-    self._processMap["pullMsg"] = Processor.process_pullMsg
-    self._processMap["pullMsgBySort"] = Processor.process_pullMsgBySort
-    self._processMap["deleteMsgs"] = Processor.process_deleteMsgs
+    self._processMap["msgSortMark"] = Processor.process_msgSortMark
     self._processMap["deleteMeta"] = Processor.process_deleteMeta
-    self._processMap["pullPaginateMsg"] = Processor.process_pullPaginateMsg
-    self._processMap["pullPaginateMsgBySort"] = Processor.process_pullPaginateMsgBySort
     self._processMap["getMsgCount"] = Processor.process_getMsgCount
     self._processMap["getMsgCountBySort"] = Processor.process_getMsgCountBySort
+    self._processMap["pullMsg"] = Processor.process_pullMsg
+    self._processMap["pullMsgBySort"] = Processor.process_pullMsgBySort
+    self._processMap["pullPaginateMsg"] = Processor.process_pullPaginateMsg
+    self._processMap["pullPaginateMsgBySort"] = Processor.process_pullPaginateMsgBySort
+    self._processMap["pushApprove"] = Processor.process_pushApprove
+    self._processMap["deleteMsgs"] = Processor.process_deleteMsgs
     self._processMap["getApproveCount"] = Processor.process_getApproveCount
     self._processMap["pullApprove"] = Processor.process_pullApprove
-    self._processMap["pushApprove"] = Processor.process_pushApprove
-    self._processMap["msgSortMark"] = Processor.process_msgSortMark
+    self._processMap["pushDelicious"] = Processor.process_pushDelicious
+    self._processMap["deleteDelicious"] = Processor.process_deleteDelicious
+    self._processMap["getDeliciousCount"] = Processor.process_getDeliciousCount
+    self._processMap["pullDelicious"] = Processor.process_pullDelicious
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -650,35 +796,13 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_pullMsg(self, seqid, iprot, oprot):
-    args = pullMsg_args()
+  def process_msgSortMark(self, seqid, iprot, oprot):
+    args = msgSortMark_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = pullMsg_result()
-    result.success = self._handler.pullMsg(args.size)
-    oprot.writeMessageBegin("pullMsg", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_pullMsgBySort(self, seqid, iprot, oprot):
-    args = pullMsgBySort_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = pullMsgBySort_result()
-    result.success = self._handler.pullMsgBySort(args.size, args.sort_id)
-    oprot.writeMessageBegin("pullMsgBySort", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_deleteMsgs(self, seqid, iprot, oprot):
-    args = deleteMsgs_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = deleteMsgs_result()
-    result.success = self._handler.deleteMsgs(args.ids)
-    oprot.writeMessageBegin("deleteMsgs", TMessageType.REPLY, seqid)
+    result = msgSortMark_result()
+    result.success = self._handler.msgSortMark(args.ids, args.sort_id)
+    oprot.writeMessageBegin("msgSortMark", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -690,28 +814,6 @@ class Processor(Iface, TProcessor):
     result = deleteMeta_result()
     result.success = self._handler.deleteMeta(args.ids)
     oprot.writeMessageBegin("deleteMeta", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_pullPaginateMsg(self, seqid, iprot, oprot):
-    args = pullPaginateMsg_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = pullPaginateMsg_result()
-    result.success = self._handler.pullPaginateMsg(args.start_index, args.item_num)
-    oprot.writeMessageBegin("pullPaginateMsg", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_pullPaginateMsgBySort(self, seqid, iprot, oprot):
-    args = pullPaginateMsgBySort_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = pullPaginateMsgBySort_result()
-    result.success = self._handler.pullPaginateMsgBySort(args.start_index, args.item_num, args.sort_id)
-    oprot.writeMessageBegin("pullPaginateMsgBySort", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -738,6 +840,72 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_pullMsg(self, seqid, iprot, oprot):
+    args = pullMsg_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullMsg_result()
+    result.success = self._handler.pullMsg(args.size)
+    oprot.writeMessageBegin("pullMsg", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pullMsgBySort(self, seqid, iprot, oprot):
+    args = pullMsgBySort_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullMsgBySort_result()
+    result.success = self._handler.pullMsgBySort(args.size, args.sort_id)
+    oprot.writeMessageBegin("pullMsgBySort", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pullPaginateMsg(self, seqid, iprot, oprot):
+    args = pullPaginateMsg_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullPaginateMsg_result()
+    result.success = self._handler.pullPaginateMsg(args.start_index, args.item_num)
+    oprot.writeMessageBegin("pullPaginateMsg", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pullPaginateMsgBySort(self, seqid, iprot, oprot):
+    args = pullPaginateMsgBySort_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullPaginateMsgBySort_result()
+    result.success = self._handler.pullPaginateMsgBySort(args.start_index, args.item_num, args.sort_id)
+    oprot.writeMessageBegin("pullPaginateMsgBySort", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pushApprove(self, seqid, iprot, oprot):
+    args = pushApprove_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pushApprove_result()
+    result.success = self._handler.pushApprove(args.data)
+    oprot.writeMessageBegin("pushApprove", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_deleteMsgs(self, seqid, iprot, oprot):
+    args = deleteMsgs_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = deleteMsgs_result()
+    result.success = self._handler.deleteMsgs(args.ids)
+    oprot.writeMessageBegin("deleteMsgs", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_getApproveCount(self, seqid, iprot, oprot):
     args = getApproveCount_args()
     args.read(iprot)
@@ -760,24 +928,46 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_pushApprove(self, seqid, iprot, oprot):
-    args = pushApprove_args()
+  def process_pushDelicious(self, seqid, iprot, oprot):
+    args = pushDelicious_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = pushApprove_result()
-    result.success = self._handler.pushApprove(args.data)
-    oprot.writeMessageBegin("pushApprove", TMessageType.REPLY, seqid)
+    result = pushDelicious_result()
+    result.success = self._handler.pushDelicious(args.data)
+    oprot.writeMessageBegin("pushDelicious", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_msgSortMark(self, seqid, iprot, oprot):
-    args = msgSortMark_args()
+  def process_deleteDelicious(self, seqid, iprot, oprot):
+    args = deleteDelicious_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = msgSortMark_result()
-    result.success = self._handler.msgSortMark(args.ids, args.sort_id)
-    oprot.writeMessageBegin("msgSortMark", TMessageType.REPLY, seqid)
+    result = deleteDelicious_result()
+    result.success = self._handler.deleteDelicious(args.ids)
+    oprot.writeMessageBegin("deleteDelicious", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_getDeliciousCount(self, seqid, iprot, oprot):
+    args = getDeliciousCount_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = getDeliciousCount_result()
+    result.success = self._handler.getDeliciousCount()
+    oprot.writeMessageBegin("getDeliciousCount", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_pullDelicious(self, seqid, iprot, oprot):
+    args = pullDelicious_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = pullDelicious_result()
+    result.success = self._handler.pullDelicious(args.start_index, args.item_num)
+    oprot.writeMessageBegin("pullDelicious", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -1160,6 +1350,492 @@ class pushString_result:
   def __ne__(self, other):
     return not (self == other)
 
+class msgSortMark_args:
+  """
+  Attributes:
+   - ids
+   - sort_id
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
+    (2, TType.I32, 'sort_id', None, None, ), # 2
+  )
+
+  def __init__(self, ids=None, sort_id=None,):
+    self.ids = ids
+    self.sort_id = sort_id
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.ids = []
+          (_etype24, _size21) = iprot.readListBegin()
+          for _i25 in xrange(_size21):
+            _elem26 = iprot.readI32();
+            self.ids.append(_elem26)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.sort_id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('msgSortMark_args')
+    if self.ids is not None:
+      oprot.writeFieldBegin('ids', TType.LIST, 1)
+      oprot.writeListBegin(TType.I32, len(self.ids))
+      for iter27 in self.ids:
+        oprot.writeI32(iter27)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.sort_id is not None:
+      oprot.writeFieldBegin('sort_id', TType.I32, 2)
+      oprot.writeI32(self.sort_id)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class msgSortMark_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('msgSortMark_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class deleteMeta_args:
+  """
+  Attributes:
+   - ids
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
+  )
+
+  def __init__(self, ids=None,):
+    self.ids = ids
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.ids = []
+          (_etype31, _size28) = iprot.readListBegin()
+          for _i32 in xrange(_size28):
+            _elem33 = iprot.readI32();
+            self.ids.append(_elem33)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('deleteMeta_args')
+    if self.ids is not None:
+      oprot.writeFieldBegin('ids', TType.LIST, 1)
+      oprot.writeListBegin(TType.I32, len(self.ids))
+      for iter34 in self.ids:
+        oprot.writeI32(iter34)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class deleteMeta_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('deleteMeta_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCount_args:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCount_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCount_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCount_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCountBySort_args:
+  """
+  Attributes:
+   - sort_id
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'sort_id', None, None, ), # 1
+  )
+
+  def __init__(self, sort_id=None,):
+    self.sort_id = sort_id
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.sort_id = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCountBySort_args')
+    if self.sort_id is not None:
+      oprot.writeFieldBegin('sort_id', TType.I32, 1)
+      oprot.writeI32(self.sort_id)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getMsgCountBySort_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getMsgCountBySort_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class pullMsg_args:
   """
   Attributes:
@@ -1245,11 +1921,11 @@ class pullMsg_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype24, _size21) = iprot.readListBegin()
-          for _i25 in xrange(_size21):
-            _elem26 = Message()
-            _elem26.read(iprot)
-            self.success.append(_elem26)
+          (_etype38, _size35) = iprot.readListBegin()
+          for _i39 in xrange(_size35):
+            _elem40 = Message()
+            _elem40.read(iprot)
+            self.success.append(_elem40)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1266,8 +1942,8 @@ class pullMsg_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter27 in self.success:
-        iter27.write(oprot)
+      for iter41 in self.success:
+        iter41.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -1385,11 +2061,11 @@ class pullMsgBySort_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype31, _size28) = iprot.readListBegin()
-          for _i32 in xrange(_size28):
-            _elem33 = Message()
-            _elem33.read(iprot)
-            self.success.append(_elem33)
+          (_etype45, _size42) = iprot.readListBegin()
+          for _i46 in xrange(_size42):
+            _elem47 = Message()
+            _elem47.read(iprot)
+            self.success.append(_elem47)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -1406,263 +2082,9 @@ class pullMsgBySort_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter34 in self.success:
-        iter34.write(oprot)
+      for iter48 in self.success:
+        iter48.write(oprot)
       oprot.writeListEnd()
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class deleteMsgs_args:
-  """
-  Attributes:
-   - ids
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
-  )
-
-  def __init__(self, ids=None,):
-    self.ids = ids
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.LIST:
-          self.ids = []
-          (_etype38, _size35) = iprot.readListBegin()
-          for _i39 in xrange(_size35):
-            _elem40 = iprot.readI32();
-            self.ids.append(_elem40)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('deleteMsgs_args')
-    if self.ids is not None:
-      oprot.writeFieldBegin('ids', TType.LIST, 1)
-      oprot.writeListBegin(TType.I32, len(self.ids))
-      for iter41 in self.ids:
-        oprot.writeI32(iter41)
-      oprot.writeListEnd()
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class deleteMsgs_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.BOOL:
-          self.success = iprot.readBool();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('deleteMsgs_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.BOOL, 0)
-      oprot.writeBool(self.success)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class deleteMeta_args:
-  """
-  Attributes:
-   - ids
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
-  )
-
-  def __init__(self, ids=None,):
-    self.ids = ids
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.LIST:
-          self.ids = []
-          (_etype45, _size42) = iprot.readListBegin()
-          for _i46 in xrange(_size42):
-            _elem47 = iprot.readI32();
-            self.ids.append(_elem47)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('deleteMeta_args')
-    if self.ids is not None:
-      oprot.writeFieldBegin('ids', TType.LIST, 1)
-      oprot.writeListBegin(TType.I32, len(self.ids))
-      for iter48 in self.ids:
-        oprot.writeI32(iter48)
-      oprot.writeListEnd()
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class deleteMeta_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.BOOL, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.BOOL:
-          self.success = iprot.readBool();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('deleteMeta_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.BOOL, 0)
-      oprot.writeBool(self.success)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -1974,120 +2396,19 @@ class pullPaginateMsgBySort_result:
   def __ne__(self, other):
     return not (self == other)
 
-class getMsgCount_args:
-
-  thrift_spec = (
-  )
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('getMsgCount_args')
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class getMsgCount_result:
+class pushApprove_args:
   """
   Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.I32, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.I32:
-          self.success = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('getMsgCount_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.I32, 0)
-      oprot.writeI32(self.success)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class getMsgCountBySort_args:
-  """
-  Attributes:
-   - sort_id
+   - data
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'sort_id', None, None, ), # 1
+    (1, TType.LIST, 'data', (TType.STRUCT,(Message, Message.thrift_spec)), None, ), # 1
   )
 
-  def __init__(self, sort_id=None,):
-    self.sort_id = sort_id
+  def __init__(self, data=None,):
+    self.data = data
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2099,8 +2420,14 @@ class getMsgCountBySort_args:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.sort_id = iprot.readI32();
+        if ftype == TType.LIST:
+          self.data = []
+          (_etype66, _size63) = iprot.readListBegin()
+          for _i67 in xrange(_size63):
+            _elem68 = Message()
+            _elem68.read(iprot)
+            self.data.append(_elem68)
+          iprot.readListEnd()
         else:
           iprot.skip(ftype)
       else:
@@ -2112,10 +2439,13 @@ class getMsgCountBySort_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('getMsgCountBySort_args')
-    if self.sort_id is not None:
-      oprot.writeFieldBegin('sort_id', TType.I32, 1)
-      oprot.writeI32(self.sort_id)
+    oprot.writeStructBegin('pushApprove_args')
+    if self.data is not None:
+      oprot.writeFieldBegin('data', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.data))
+      for iter69 in self.data:
+        iter69.write(oprot)
+      oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2135,7 +2465,7 @@ class getMsgCountBySort_args:
   def __ne__(self, other):
     return not (self == other)
 
-class getMsgCountBySort_result:
+class pushApprove_result:
   """
   Attributes:
    - success
@@ -2171,10 +2501,137 @@ class getMsgCountBySort_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('getMsgCountBySort_result')
+    oprot.writeStructBegin('pushApprove_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.I32, 0)
       oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class deleteMsgs_args:
+  """
+  Attributes:
+   - ids
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
+  )
+
+  def __init__(self, ids=None,):
+    self.ids = ids
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.ids = []
+          (_etype73, _size70) = iprot.readListBegin()
+          for _i74 in xrange(_size70):
+            _elem75 = iprot.readI32();
+            self.ids.append(_elem75)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('deleteMsgs_args')
+    if self.ids is not None:
+      oprot.writeFieldBegin('ids', TType.LIST, 1)
+      oprot.writeListBegin(TType.I32, len(self.ids))
+      for iter76 in self.ids:
+        oprot.writeI32(iter76)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class deleteMsgs_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('deleteMsgs_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2392,11 +2849,11 @@ class pullApprove_result:
       if fid == 0:
         if ftype == TType.LIST:
           self.success = []
-          (_etype66, _size63) = iprot.readListBegin()
-          for _i67 in xrange(_size63):
-            _elem68 = Message()
-            _elem68.read(iprot)
-            self.success.append(_elem68)
+          (_etype80, _size77) = iprot.readListBegin()
+          for _i81 in xrange(_size77):
+            _elem82 = Message()
+            _elem82.read(iprot)
+            self.success.append(_elem82)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2413,8 +2870,8 @@ class pullApprove_result:
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.LIST, 0)
       oprot.writeListBegin(TType.STRUCT, len(self.success))
-      for iter69 in self.success:
-        iter69.write(oprot)
+      for iter83 in self.success:
+        iter83.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2435,7 +2892,7 @@ class pullApprove_result:
   def __ne__(self, other):
     return not (self == other)
 
-class pushApprove_args:
+class pushDelicious_args:
   """
   Attributes:
    - data
@@ -2461,11 +2918,11 @@ class pushApprove_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.data = []
-          (_etype73, _size70) = iprot.readListBegin()
-          for _i74 in xrange(_size70):
-            _elem75 = Message()
-            _elem75.read(iprot)
-            self.data.append(_elem75)
+          (_etype87, _size84) = iprot.readListBegin()
+          for _i88 in xrange(_size84):
+            _elem89 = Message()
+            _elem89.read(iprot)
+            self.data.append(_elem89)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -2478,12 +2935,12 @@ class pushApprove_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('pushApprove_args')
+    oprot.writeStructBegin('pushDelicious_args')
     if self.data is not None:
       oprot.writeFieldBegin('data', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.data))
-      for iter76 in self.data:
-        iter76.write(oprot)
+      for iter90 in self.data:
+        iter90.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -2504,7 +2961,7 @@ class pushApprove_args:
   def __ne__(self, other):
     return not (self == other)
 
-class pushApprove_result:
+class pushDelicious_result:
   """
   Attributes:
    - success
@@ -2540,7 +2997,7 @@ class pushApprove_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('pushApprove_result')
+    oprot.writeStructBegin('pushDelicious_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.I32, 0)
       oprot.writeI32(self.success)
@@ -2563,22 +3020,19 @@ class pushApprove_result:
   def __ne__(self, other):
     return not (self == other)
 
-class msgSortMark_args:
+class deleteDelicious_args:
   """
   Attributes:
    - ids
-   - sort_id
   """
 
   thrift_spec = (
     None, # 0
     (1, TType.LIST, 'ids', (TType.I32,None), None, ), # 1
-    (2, TType.I32, 'sort_id', None, None, ), # 2
   )
 
-  def __init__(self, ids=None, sort_id=None,):
+  def __init__(self, ids=None,):
     self.ids = ids
-    self.sort_id = sort_id
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -2592,16 +3046,11 @@ class msgSortMark_args:
       if fid == 1:
         if ftype == TType.LIST:
           self.ids = []
-          (_etype80, _size77) = iprot.readListBegin()
-          for _i81 in xrange(_size77):
-            _elem82 = iprot.readI32();
-            self.ids.append(_elem82)
+          (_etype94, _size91) = iprot.readListBegin()
+          for _i95 in xrange(_size91):
+            _elem96 = iprot.readI32();
+            self.ids.append(_elem96)
           iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.I32:
-          self.sort_id = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -2613,17 +3062,13 @@ class msgSortMark_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('msgSortMark_args')
+    oprot.writeStructBegin('deleteDelicious_args')
     if self.ids is not None:
       oprot.writeFieldBegin('ids', TType.LIST, 1)
       oprot.writeListBegin(TType.I32, len(self.ids))
-      for iter83 in self.ids:
-        oprot.writeI32(iter83)
+      for iter97 in self.ids:
+        oprot.writeI32(iter97)
       oprot.writeListEnd()
-      oprot.writeFieldEnd()
-    if self.sort_id is not None:
-      oprot.writeFieldBegin('sort_id', TType.I32, 2)
-      oprot.writeI32(self.sort_id)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -2643,7 +3088,7 @@ class msgSortMark_args:
   def __ne__(self, other):
     return not (self == other)
 
-class msgSortMark_result:
+class deleteDelicious_result:
   """
   Attributes:
    - success
@@ -2679,10 +3124,251 @@ class msgSortMark_result:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('msgSortMark_result')
+    oprot.writeStructBegin('deleteDelicious_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.BOOL, 0)
       oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getDeliciousCount_args:
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getDeliciousCount_args')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class getDeliciousCount_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.I32, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.I32:
+          self.success = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('getDeliciousCount_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.I32, 0)
+      oprot.writeI32(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class pullDelicious_args:
+  """
+  Attributes:
+   - start_index
+   - item_num
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'start_index', None, None, ), # 1
+    (2, TType.I32, 'item_num', None, None, ), # 2
+  )
+
+  def __init__(self, start_index=None, item_num=None,):
+    self.start_index = start_index
+    self.item_num = item_num
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.start_index = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.item_num = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('pullDelicious_args')
+    if self.start_index is not None:
+      oprot.writeFieldBegin('start_index', TType.I32, 1)
+      oprot.writeI32(self.start_index)
+      oprot.writeFieldEnd()
+    if self.item_num is not None:
+      oprot.writeFieldBegin('item_num', TType.I32, 2)
+      oprot.writeI32(self.item_num)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class pullDelicious_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.LIST, 'success', (TType.STRUCT,(Message, Message.thrift_spec)), None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.LIST:
+          self.success = []
+          (_etype101, _size98) = iprot.readListBegin()
+          for _i102 in xrange(_size98):
+            _elem103 = Message()
+            _elem103.read(iprot)
+            self.success.append(_elem103)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('pullDelicious_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.LIST, 0)
+      oprot.writeListBegin(TType.STRUCT, len(self.success))
+      for iter104 in self.success:
+        iter104.write(oprot)
+      oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()

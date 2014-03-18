@@ -18,9 +18,12 @@ class WeixinDB:
 			print e
 		return ()
 
-	def execute_delete(self,sql_str):
+	def execute_delete(self,sql_str,*params):
 		try:
-			self.cursor.execute(sql_str)
+			if len(params) == 0:
+				self.cursor.execute(sql_str)
+			else:
+				self.cursor.execute(sql_str,params[0])
 		except Exception, e:
 			print e
 			return False
