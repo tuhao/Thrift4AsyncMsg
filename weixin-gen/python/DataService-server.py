@@ -209,15 +209,15 @@ class ThriftHandler(DataService.Iface):
 
 
 	def deleteMsgs(self,ids):
-		sql_str = "delete from signature_message where id = %d "
+		sql_str = "delete from signature_message where id = '%s' "
 		return self.gen_delete_msg(sql_str, ids)
 
 	def deleteMeta(self,ids):
-		sql_str = "delete from approve_metadata where id = %d "
+		sql_str = "delete from approve_metadata where id = '%s' "
 		return self.gen_delete_msg(sql_str, ids)
 
 	def deleteDelicious(self,ids):
-		sql_str = "delete from approve_delicious where id = %d "
+		sql_str = "delete from approve_delicious where id = '%s' "
 		return self.gen_delete_msg(sql_str, ids)
 
 
