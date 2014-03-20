@@ -172,6 +172,10 @@ class ThriftHandler(DataService.Iface):
 		sql_str = 'insert into approve_delicious (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
 		return self.gen_push_msg(sql_str, data)
 
+	def pushHealthy(self,data):
+		sql_str = 'insert into approve_healthy  (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
+		return self.gen_push_msg(sql_str, data)
+
 	def pullApprove(self,start_index,item_num):
 		sql_str = "select * from signature_message order by id desc limit %s,%s "
 		return self.gen_query_tuple(sql_str, (start_index,item_num))
@@ -180,12 +184,20 @@ class ThriftHandler(DataService.Iface):
 		sql_str = "select * from approve_delicious order by id desc limit %s,%s "
 		return self.gen_query_tuple(sql_str, (start_index,item_num))
 
+	def pullHealthy(self,start_index,item_num):
+		sql_str = "select * from approve_healthy order by id desc limit %s,%s "
+		return self.gen_query_tuple(sql_str,(start_index,item_num))
+
 	def getApproveCount(self):
 		sql_str = "select count(*) from signature_message "
 		return self.gen_query_number(sql_str)
 
 	def getDeliciousCount(self):
 		sql_str = "select count(*) from approve_delicious "
+		return self.gen_query_number(sql_str)
+	
+	def getHealthyCount(self):
+		sql_str = "select count(*) from approve_healthy "
 		return self.gen_query_number(sql_str)
 
 	def msgSortMark(self,ids,sort_id):
@@ -219,6 +231,10 @@ class ThriftHandler(DataService.Iface):
 	def deleteDelicious(self,ids):
 		sql_str = "delete from approve_delicious where id = '%s' "
 		return self.gen_delete_msg(sql_str, ids)
+
+	def deleteHealthy(self,ids):
+		sql_str = "delete from approve_healthy where id = '%s' "
+		return self.gen_delete_msg(sql_str,ids)
 
 
 

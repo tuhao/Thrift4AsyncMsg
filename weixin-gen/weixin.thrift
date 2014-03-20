@@ -42,5 +42,10 @@ service DataService {
 	bool deleteDelicious(1: list<i32> ids),
 	i32 getDeliciousCount(),
 	list<Message> pullDelicious(1: i32 start_index,2: i32 item_num),
+
+	i32 pushHealthy(1: list<Message> data),
+	bool deleteHealthy(1: list<i32> ids),
+	i32 getHealthyCount(),
+	list<Message> pullHealthy(1: i32 start_index,2: i32 item_num),
 	
 }
