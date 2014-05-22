@@ -253,11 +253,16 @@ if len(sys.argv) > 1:
     	if sys.argv[argi] == '-cfg':
     		CFG_FILE = sys.argv[argi+1]
 
-transport = TSocket.TServerSocket(server_address,port)
-transportFactory = TTransport.TFramedTransportFactory()
-protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
 handler = ThriftHandler()
 processor = DataService.Processor(handler)
-server = TServer.TThreadPoolServer(processor,transport,transportFactory,protocolFactory)
+protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
+server = THttpServer.THttpServer(processor,(server_address,port),protocolFactory)
+
+#transport = TSocket.TServerSocket(server_address,port)
+#transportFactory = TTransport.TFramedTransportFactory()
+#protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
+#handler = ThriftHandler()
+#processor = DataService.Processor(handler)
+#server = TServer.TThreadPoolServer(processor,transport,transportFactory,protocolFactory)
 print "Starting thrift server in python..."
 server.serve()
