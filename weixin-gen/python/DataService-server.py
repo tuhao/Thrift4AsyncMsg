@@ -1,6 +1,7 @@
 #coding=utf-8
 from thrift.server import THttpServer
 from thrift.server import TServer
+from thrift.server import TNonBlockingServer
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
@@ -253,16 +254,17 @@ if len(sys.argv) > 1:
     	if sys.argv[argi] == '-cfg':
     		CFG_FILE = sys.argv[argi+1]
 
-handler = ThriftHandler()
-processor = DataService.Processor(handler)
-protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
-server = THttpServer.THttpServer(processor,(server_address,port),protocolFactory)
-
-#transport = TSocket.TServerSocket(server_address,port)
-#transportFactory = TTransport.TFramedTransportFactory()
-#protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
 #handler = ThriftHandler()
 #processor = DataService.Processor(handler)
+#protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
+#server = THttpServer.THttpServer(processor,(server_address,port),protocolFactory)
+
+transport = TSocket.TServerSocket(server_address,port)
+#transportFactory = TTransport.TFramedTransportFactory()
+#protocolFactory = TBinaryProtocol.TBinaryProtocolFactory()
+handler = ThriftHandler()
+processor = DataService.Processor(handler)
 #server = TServer.TThreadPoolServer(processor,transport,transportFactory,protocolFactory)
+server = TNonBlockingServer.TNonBlockingServer(processor,transport)
 print "Starting thrift server in python..."
 server.serve()
