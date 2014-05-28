@@ -1,7 +1,7 @@
 #coding=utf-8
 from thrift.server import THttpServer
 from thrift.server import TServer
-from thrift.server import TNonBlockingServer
+from thrift.server import TNonblockingServer
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
@@ -265,6 +265,6 @@ transport = TSocket.TServerSocket(server_address,port)
 handler = ThriftHandler()
 processor = DataService.Processor(handler)
 #server = TServer.TThreadPoolServer(processor,transport,transportFactory,protocolFactory)
-server = TNonBlockingServer.TNonBlockingServer(processor,transport)
+server = TNonblockingServer.TNonblockingServer(processor,transport)
 print "Starting thrift server in python..."
 server.serve()
