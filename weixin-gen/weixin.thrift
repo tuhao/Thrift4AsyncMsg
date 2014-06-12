@@ -47,5 +47,10 @@ service DataService {
 	bool deleteHealthy(1: list<i32> ids),
 	i32 getHealthyCount(),
 	list<Message> pullHealthy(1: i32 start_index,2: i32 item_num),
+
+	i32 pushUnRelated(1:list<Message> data),
+	bool deleteUnRelated(1: list<i32> ids),
+	i32 getUnRelatedCount(),
+	list<Message> pullUnRelated(1: i32 start_index,2: i32 item_num),
 	
 }

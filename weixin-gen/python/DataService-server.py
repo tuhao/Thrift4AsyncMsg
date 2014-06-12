@@ -189,6 +189,10 @@ class ThriftHandler(DataService.Iface):
 		sql_str = "select * from approve_healthydata order by id desc limit %s,%s "
 		return self.gen_query_tuple(sql_str,(start_index,item_num))
 
+	def pullUnRelated(self,start_index,item_num):
+		sql_str="select * from approve_unrelateddata order by id desc limit %s,%s"
+		return self.gen_query_tuple(sql_str,(start_index,item_num))
+
 	def getApproveCount(self):
 		sql_str = "select count(*) from signature_message "
 		return self.gen_query_number(sql_str)
@@ -199,6 +203,10 @@ class ThriftHandler(DataService.Iface):
 	
 	def getHealthyCount(self):
 		sql_str = "select count(*) from approve_healthydata "
+		return self.gen_query_number(sql_str)
+
+	def getUnRelatedCount(self):
+		sql_str = "select count(*) from approve_unrelateddata"
 		return self.gen_query_number(sql_str)
 
 	def msgSortMark(self,ids,sort_id):

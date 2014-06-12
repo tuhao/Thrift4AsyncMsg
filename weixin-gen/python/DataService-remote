@@ -15,8 +15,8 @@ from thrift.transport import TSocket
 from thrift.transport import THttpClient
 from thrift.protocol import TBinaryProtocol
 
-import DataService
-from ttypes import *
+from weixin import DataService
+from weixin.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
@@ -26,7 +26,30 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  bool pushMsg( data)'
   print '  bool pushNews( data)'
   print '  bool pushString(string data)'
+  print '  bool msgSortMark( ids, i32 sort_id)'
+  print '  bool deleteMeta( ids)'
+  print '  i32 getMsgCount()'
+  print '  i32 getMsgCountBySort(i32 sort_id)'
   print '   pullMsg(i32 size)'
+  print '   pullMsgBySort(i32 size, i32 sort_id)'
+  print '   pullPaginateMsg(i32 start_index, i32 item_num)'
+  print '   pullPaginateMsgBySort(i32 start_index, i32 item_num, i32 sort_id)'
+  print '  i32 pushApprove( data)'
+  print '  bool deleteMsgs( ids)'
+  print '  i32 getApproveCount()'
+  print '   pullApprove(i32 start_index, i32 item_num)'
+  print '  i32 pushDelicious( data)'
+  print '  bool deleteDelicious( ids)'
+  print '  i32 getDeliciousCount()'
+  print '   pullDelicious(i32 start_index, i32 item_num)'
+  print '  i32 pushHealthy( data)'
+  print '  bool deleteHealthy( ids)'
+  print '  i32 getHealthyCount()'
+  print '   pullHealthy(i32 start_index, i32 item_num)'
+  print '  i32 pushUnRelated( data)'
+  print '  bool deleteUnRelated( ids)'
+  print '  i32 getUnRelatedCount()'
+  print '   pullUnRelated(i32 start_index, i32 item_num)'
   print ''
   sys.exit(0)
 
@@ -34,7 +57,7 @@ pp = pprint.PrettyPrinter(indent = 2)
 host = 'localhost'
 port = 9090
 uri = ''
-framed = True
+framed = False
 http = False
 argi = 1
 
@@ -45,23 +68,23 @@ if sys.argv[argi] == '-h':
     port = int(parts[1])
   argi += 2
 
-#if sys.argv[argi] == '-u':
-#  url = urlparse(sys.argv[argi+1])
-#  parts = url[1].split(':')
-#  host = parts[0]
-#  if len(parts) > 1:
-#    port = int(parts[1])
-#  else:
-#    port = 80
-#  uri = url[2]
-#  if url[4]:
-#    uri += '?%s' % url[4]
-#  http = True
-#  argi += 2
-#
-#if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
-#  framed = True
-#  argi += 1
+if sys.argv[argi] == '-u':
+  url = urlparse(sys.argv[argi+1])
+  parts = url[1].split(':')
+  host = parts[0]
+  if len(parts) > 1:
+    port = int(parts[1])
+  else:
+    port = 80
+  uri = url[2]
+  if url[4]:
+    uri += '?%s' % url[4]
+  http = True
+  argi += 2
+
+if sys.argv[argi] == '-f' or sys.argv[argi] == '-framed':
+  framed = True
+  argi += 1
 
 cmd = sys.argv[argi]
 args = sys.argv[argi+1:]
@@ -96,11 +119,149 @@ elif cmd == 'pushString':
     sys.exit(1)
   pp.pprint(client.pushString(args[0],))
 
+elif cmd == 'msgSortMark':
+  if len(args) != 2:
+    print 'msgSortMark requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.msgSortMark(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'deleteMeta':
+  if len(args) != 1:
+    print 'deleteMeta requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deleteMeta(eval(args[0]),))
+
+elif cmd == 'getMsgCount':
+  if len(args) != 0:
+    print 'getMsgCount requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getMsgCount())
+
+elif cmd == 'getMsgCountBySort':
+  if len(args) != 1:
+    print 'getMsgCountBySort requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.getMsgCountBySort(eval(args[0]),))
+
 elif cmd == 'pullMsg':
   if len(args) != 1:
     print 'pullMsg requires 1 args'
     sys.exit(1)
   pp.pprint(client.pullMsg(eval(args[0]),))
+
+elif cmd == 'pullMsgBySort':
+  if len(args) != 2:
+    print 'pullMsgBySort requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.pullMsgBySort(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'pullPaginateMsg':
+  if len(args) != 2:
+    print 'pullPaginateMsg requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.pullPaginateMsg(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'pullPaginateMsgBySort':
+  if len(args) != 3:
+    print 'pullPaginateMsgBySort requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.pullPaginateMsgBySort(eval(args[0]),eval(args[1]),eval(args[2]),))
+
+elif cmd == 'pushApprove':
+  if len(args) != 1:
+    print 'pushApprove requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.pushApprove(eval(args[0]),))
+
+elif cmd == 'deleteMsgs':
+  if len(args) != 1:
+    print 'deleteMsgs requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deleteMsgs(eval(args[0]),))
+
+elif cmd == 'getApproveCount':
+  if len(args) != 0:
+    print 'getApproveCount requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getApproveCount())
+
+elif cmd == 'pullApprove':
+  if len(args) != 2:
+    print 'pullApprove requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.pullApprove(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'pushDelicious':
+  if len(args) != 1:
+    print 'pushDelicious requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.pushDelicious(eval(args[0]),))
+
+elif cmd == 'deleteDelicious':
+  if len(args) != 1:
+    print 'deleteDelicious requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deleteDelicious(eval(args[0]),))
+
+elif cmd == 'getDeliciousCount':
+  if len(args) != 0:
+    print 'getDeliciousCount requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getDeliciousCount())
+
+elif cmd == 'pullDelicious':
+  if len(args) != 2:
+    print 'pullDelicious requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.pullDelicious(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'pushHealthy':
+  if len(args) != 1:
+    print 'pushHealthy requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.pushHealthy(eval(args[0]),))
+
+elif cmd == 'deleteHealthy':
+  if len(args) != 1:
+    print 'deleteHealthy requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deleteHealthy(eval(args[0]),))
+
+elif cmd == 'getHealthyCount':
+  if len(args) != 0:
+    print 'getHealthyCount requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getHealthyCount())
+
+elif cmd == 'pullHealthy':
+  if len(args) != 2:
+    print 'pullHealthy requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.pullHealthy(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'pushUnRelated':
+  if len(args) != 1:
+    print 'pushUnRelated requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.pushUnRelated(eval(args[0]),))
+
+elif cmd == 'deleteUnRelated':
+  if len(args) != 1:
+    print 'deleteUnRelated requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.deleteUnRelated(eval(args[0]),))
+
+elif cmd == 'getUnRelatedCount':
+  if len(args) != 0:
+    print 'getUnRelatedCount requires 0 args'
+    sys.exit(1)
+  pp.pprint(client.getUnRelatedCount())
+
+elif cmd == 'pullUnRelated':
+  if len(args) != 2:
+    print 'pullUnRelated requires 2 args'
+    sys.exit(1)
+  pp.pprint(client.pullUnRelated(eval(args[0]),eval(args[1]),))
 
 else:
   print 'Unrecognized method %s' % cmd
