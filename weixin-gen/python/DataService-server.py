@@ -177,6 +177,10 @@ class ThriftHandler(DataService.Iface):
 		sql_str = 'insert into approve_healthydata  (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
 		return self.gen_push_msg(sql_str, data)
 
+	def pushUnRelated(self,data):
+		sql_str = 'insert into approve_unrelateddata  (title,create_time,content,reason,sort_id) values (%s,%s,%s,%s,%s)' 
+		return self.gen_push_msg(sql_str, data)
+
 	def pullApprove(self,start_index,item_num):
 		sql_str = "select * from signature_message order by id desc limit %s,%s "
 		return self.gen_query_tuple(sql_str, (start_index,item_num))
